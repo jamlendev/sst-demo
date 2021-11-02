@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import StorageStack from "./StorageStack"
 import ApiStack from "./ApiStack"
 import AuthStack from "./AuthStack"
