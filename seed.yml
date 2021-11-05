@@ -3,6 +3,10 @@ before_compile:
 
 before_build:
   - echo "Before build"
+  - cd ./frontend
+  - yarn
+  - yarn sst build --stage dev --verbose
+  - cd ..
 
 before_deploy:
   - echo "Before deploy"
