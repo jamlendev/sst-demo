@@ -1,9 +1,9 @@
 before_compile:
   - echo "Before compile"
+  - cd ./frontend && yarn
 
 before_build:
   - echo "Before build"
-  - cd ./frontend && yarn
 
 before_deploy:
   - echo "Before deploy"
