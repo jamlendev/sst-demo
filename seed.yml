@@ -3,7 +3,6 @@ before_compile:
 
 before_build:
   - echo "Before build"
-  - cd ../stacks/ApiStack
 
 before_deploy:
   - echo "Before deploy"
