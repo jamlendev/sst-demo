@@ -1,5 +1,5 @@
 before_compile:
-  - echo ""######## BEFORE COMPILE ##########"
+  - echo "######## BEFORE COMPILE ##########"
   - yarn
 
 before_build:
