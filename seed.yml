@@ -3,7 +3,7 @@ before_compile:
   - yarn
 
 before_build:
-  - echo "Before build
+  - echo "Before build"
   - yarn
   - cd ./frontend && yarn
 
