@@ -1,9 +1,11 @@
 before_compile:
-  - echo "Before compile"
+  - echo ""######## BEFORE COMPILE ##########"
+  - yarn
 
 before_build:
-  - echo "Before build"
-  - cd ./frontend && npm run build
+  - echo "######## BEFORE BUILD ##########"
+  - yarn
+  - cd ./frontend && yarn
 
 before_deploy:
   - echo "Before deploy"
