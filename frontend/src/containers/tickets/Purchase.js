@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
 import moment from 'moment';
 import { useHistory } from "react-router-dom";
 import { useFormFields } from "../../lib/hooksLib";
@@ -47,9 +44,9 @@ export default function Purchase() {
 
   function validateForm() {
     return true;
-    return (
-      fields.ticketType.length > 0 //&& fields.startDate.length > 0
-    );
+    // return (
+    //   fields.ticketType.length > 0 //&& fields.startDate.length > 0
+    // );
   }
 
   const handleSubmit = async (event) => {

@@ -3,7 +3,6 @@ import { API } from "aws-amplify";
 import { useParams, useHistory } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 
-import { useAppContext } from "../../lib/contextLib";
 import { onError } from "../../lib/errorLib";
 import LoaderButton from "../../components/LoaderButton";
 
@@ -56,7 +55,7 @@ export default function TicketHistory() {
 
   return (
     <div className="Ticket">
-      {ticket && (
+      {!isLoading && ticket && (
         <>
         <Card>
           <Card.Img variant="top" src="/TFGM.jpeg" />
