@@ -5,7 +5,8 @@ before_compile:
 before_build:
   - echo "Before build"
   - yarn
-  - cd ./frontend && yarn && yarn sst build --stage dev --region eu-west-2 --verbose
+  - cd ./frontend && yarn
+  - yarn sst build --stage dev --region eu-west-2 --verbose
   - yarn sst deploy
 
 before_deploy:
