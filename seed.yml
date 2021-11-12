@@ -3,7 +3,7 @@ before_compile:
 
 before_build:
   - echo "Before build"
-  - cd ./frontend && npm i
+  - cd ./frontend && yarn
 
 before_deploy:
   - echo "Before deploy"
