@@ -36,7 +36,6 @@ phases:
       - echo "Running SST Build"
       - cd ./frontend && yarn
       - yarn test
-    finally:
       - yarn sst build --stage aws-dev --region eu-west-2 --verbose
       
   post_build:
