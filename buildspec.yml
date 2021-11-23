@@ -1,0 +1,18 @@
+version: 0.2
+
+# This buildspec is intended to be run by CodePipeline builds.
+
+phases:
+  install:
+    commands:
+      # Install yarn if it wasn't already present in the build instance
+      - echo "Installing yarn"
+      - yarn --version || npm -g install yarn
+  build:
+    commands:
+      - echo "Running build"
+      - cd ./frontend && yarn
+      
+  post_build:
+    commands:
+      - echo "Running post build"
