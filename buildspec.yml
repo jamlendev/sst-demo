@@ -34,14 +34,14 @@ phases:
   build:
     commands:
       - echo "Running Sonar Cloud"
-      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
-      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project > result.json
+      # - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      # - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project > result.json
       # - cat result.json
       # - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
       - echo "Running SST Build"
       - cd ./frontend && yarn
       - yarn test
-      #- yarn sst build --stage aws-dev --region eu-west-2 --verbose
+      # - yarn sst build --stage aws-dev --region eu-west-2 --verbose
       
   post_build:
     commands:
