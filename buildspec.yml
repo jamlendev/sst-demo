@@ -13,11 +13,6 @@ phases:
   install:
     commands:
       # Install yarn if it wasn't already present in the build instance
-      - echo "Installing yarn"
-      - yarn
-  pre_build:
-    commands:
-      - echo "Running pre-build"
       - yarn --version || npm -g install yarn
       - apt-get update
       - apt-get install -y jq
@@ -25,14 +20,17 @@ phases:
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
       - unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
       - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      
+  pre_build:
+    commands:
+      - echo "Running Sonar Cloud"
+      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      - sleep 5
+      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECTKEY > analysis.json
+      - cat analysis.json
 
   build:
     commands:
-      - echo "Running Sonar Cloud"
-      # - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
-      # - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project > result.json
-      # - cat result.json
-      # - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
       - echo "Running SST Build"
       - cd ./frontend && yarn
       - yarn sst build --stage aws-dev --region eu-west-2 --verbose
