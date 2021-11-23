@@ -35,7 +35,6 @@ phases:
       # - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
       - echo "Running SST Build"
       - cd ./frontend && yarn
-      - yarn test
       - yarn sst build --stage aws-dev --region eu-west-2 --verbose
       
   post_build:
