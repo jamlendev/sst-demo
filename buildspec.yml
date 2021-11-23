@@ -8,11 +8,27 @@ phases:
       # Install yarn if it wasn't already present in the build instance
       - echo "Installing yarn"
       - yarn --version || npm -g install yarn
+  
+  pre_build:
+    #run-as: Linux-user-name
+    #on-failure: ABORT | CONTINUE
+    commands:
+      - echo "Running pre-build"
+      - yarn
+      - yarn test
+    #finally:
+      #- command
+      #- command
+  
   build:
     commands:
       - echo "Running build"
       - cd ./frontend && yarn
+      - yarn build
+      # - yarn sst build --stage dev --region eu-west-2 --verbose
+      
       
   post_build:
     commands:
-      - echo "Running post build"
+      - echo "Running post build and tests"
+      # - yarn sst deploy
