@@ -14,6 +14,7 @@ phases:
     commands:
       # Install yarn if it wasn't already present in the build instance
       - yarn --version || npm -g install yarn
+      - yarn global add @serverless-stack/cli --exact
       - apt-get update
       - apt-get install -y jq
       - echo "Installing SonarCloud and Setting up"
