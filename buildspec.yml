@@ -40,4 +40,4 @@ phases:
   post_build:
     commands:
       - echo "Running post build and tests"
-      - yarn deploy --stage aws-dev --region eu-west-2 --verbose
+      - yarn run deploy --stage aws-dev --region eu-west-2 --verbose
