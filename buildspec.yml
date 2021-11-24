@@ -34,9 +34,10 @@ phases:
     commands:
       - echo "Running SST Build"
       - cd ./frontend && yarn
-      - yarn && yarn build --stage aws-dev --region eu-west-2 --verbose
-      #- yarn sst build --stage aws-dev --region eu-west-2 --verbose
-      
+      - yarn
+      - yarn build
+
   post_build:
     commands:
       - echo "Running post build and tests"
+      - yarn deploy --stage aws-dev --region eu-west-2 --verbose
