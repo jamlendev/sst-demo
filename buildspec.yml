@@ -36,7 +36,7 @@ phases:
       - cd ./frontend && yarn
       - yarn
       - yarn build --stage aws-dev --region eu-west-2 --verbose
-      - yarn sst deploy --stage aws-dev --region eu-west-2 --verbose
+      - yarn add @serverless-stack/cli --exact && yarn sst deploy --stage aws-dev --region eu-west-2 --verbose
 
   post_build:
     commands:
