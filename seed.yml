@@ -10,7 +10,8 @@ before_deploy:
 
 after_deploy:
   - echo "After deploy"
-
+  - yarn sst remove
+  
 before_remove:
   - echo "Before deploy"
 

@@ -1,0 +1,50 @@
+version: 0.2
+
+# This buildspec is intended to be run by CodePipeline builds.
+
+env:
+  secrets-manager:
+    LOGIN: tfgm-br-sonarcloud-keys:sonartoken
+    HOST: tfgm-br-sonarcloud-keys:HOST
+    Organization: tfgm-br-sonarcloud-keys:Organization
+    Project: tfgm-br-sonarcloud-keys:Project
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14  
+    commands:
+      # Install yarn if it wasn't already present in the build instance
+      - yarn --version || npm -g install yarn
+      #- apt-get update
+      #- apt-get install -y jq
+      #- echo "Installing SonarCloud and Setting up"
+      #- wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
+      #- unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
+      #- export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      
+  pre_build:
+    commands:
+      - echo "Running Sonar Cloud"
+      #- sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      #- sleep 5
+      #- curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECTKEY > analysis.json
+      #- cat analysis.json
+
+  build:
+    commands:
+      - echo "Running SST Build Stage"
+      - echo "NOW SWITCHING TO FRONT END DIR"
+      - cd ./frontend && yarn && cd ..
+      - yarn
+      - echo "PRINTING CURRENT DIRECTORY"
+      - pwd
+      - ls -la
+      - echo "RUNNING A YARN BUILD"
+      - yarn sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
+      - echo "RUNNING A YARN DEPLOY"
+      - yarn sst deploy --stage aws-BRD-TEST --region eu-west-2 --verbose
+
+  post_build:
+    commands:
+      - echo "Running post build and tests"
