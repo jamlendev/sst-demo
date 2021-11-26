@@ -17,8 +17,9 @@ phases:
       # Install yarn if it wasn't already present in the build instance
       - yarn --version || npm -g install yarn
       - yarn global add @serverless-stack/cli --exact
+      - ls -la
       - echo "DISPLAYING SST AND CDK VERSION"
-      - yarn sst --version
+      - ./node-modules/.bin/sst --version
       #- apt-get update
       #- apt-get install -y jq
       #- echo "Installing SonarCloud and Setting up"
@@ -40,8 +41,9 @@ phases:
       - cd ./frontend && yarn
       - yarn
       - echo "DISPLAYING SST AND CDK VERSION IN BUILD STAGE"
-      - yarn sst --version
-      - yarn sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
+      - pwd
+      - ls -la
+      - ./node-modules/.bin/sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
       #- yarn sst deploy --stage aws-BRD-TEST --region eu-west-2 --verbose
 
   post_build:
