@@ -4,7 +4,7 @@ import * as sst from "@serverless-stack/resources"
 export default class AuthStack extends sst.Stack {
   public auth: sst.Auth
 
-  constructor(scope: sst.App, id: string, api: sst.Api, props?: sst.StackProps) {
+  constructor(scope: sst.App, id: string, api: sst.Api, customerProfile: sst.Table, props?: sst.StackProps) {
     super(scope, id, props)
 
     // Create a Cognito User Pool and Identity Pool
@@ -14,9 +14,18 @@ export default class AuthStack extends sst.Stack {
           // Users can login with their email and password
           signInAliases: { email: true },
         },
+        triggers: {
+          postConfirmation: {
+            handler: "src/triggers/postAuth.main",
+            timeout: 10,
+            environment: { TABLE_NAME: customerProfile.tableName },
+            // permissions: [bucket],
+          }
+        },
       },
     })
 
+    this.auth.attachPermissionsForTriggers([customerProfile])
     this.auth.attachPermissionsForAuthUsers([
       // Allow access to the API
       api,

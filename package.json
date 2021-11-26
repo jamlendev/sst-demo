@@ -17,6 +17,7 @@
     "@types/uuid": "^8.3.1"
   },
   "dependencies": {
+    "@anatine/esbuild-decorators": "^0.2.18",
     "@aws-cdk/aws-iam": "1.126.0",
     "@aws-cdk/core": "1.126.0",
     "@serverless-stack/cli": "0.46.0",
