@@ -37,8 +37,8 @@ phases:
       - echo "Running SST Build"
       - cd ./frontend && yarn
       - yarn
-      - yarn build --stage aws-BRD-TEST --region eu-west-2 --verbose
-      - yarn run deploy --stage aws-BRD-TEST --region eu-west-2 --verbose
+      - yarn sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
+      #- yarn sst deploy --stage aws-BRD-TEST --region eu-west-2 --verbose
 
   post_build:
     commands:
