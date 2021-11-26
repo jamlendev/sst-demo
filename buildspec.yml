@@ -33,13 +33,14 @@ phases:
 
   build:
     commands:
-      - echo "Running SST Build"
+      - echo "Running SST Build Stage"
+      - echo "NOW SWITCHING TO FRONT END DIR"
       - cd ./frontend && yarn && cd ..
       - yarn
-      - echo "DISPLAYING SST AND CDK VERSION IN BUILD STAGE"
+      - echo "PRINTING CURRENT DIRECTORY"
       - pwd
       - ls -la
-      - ./node-modules/.bin/sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
+      - yarn sst build --stage aws-BRD-TEST --region eu-west-2 --verbose
       #- yarn sst deploy --stage aws-BRD-TEST --region eu-west-2 --verbose
 
   post_build:
