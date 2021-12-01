@@ -16,12 +16,12 @@ phases:
     commands:
       # Install yarn if it wasn't already present in the build instance
       - yarn --version || npm -g install yarn
-      #- apt-get update
-      #- apt-get install -y jq
-      #- echo "Installing SonarCloud and Setting up"
-      #- wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
-      #- unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
-      #- export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      - apt-get update
+      - apt-get install -y jq
+      - echo "Installing SonarCloud Dependencies"
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+      - unzip ./sonar-scanner-cli-4.6.2.2472-linux.zip
+      - export PATH=$PATH:/sonar-scanner-cli-4.6.2.2472-linux/bin/
       
   pre_build:
     commands:
