@@ -2,12 +2,12 @@ version: 0.2
 
 # This buildspec is intended to be run by CodePipeline builds.
 
-#env:
-  #secrets-manager:
-    #LOGIN: tfgm-br-sonarcloud-keys:sonartoken
-    #HOST: tfgm-br-sonarcloud-keys:HOST
-    #Organization: tfgm-br-sonarcloud-keys:Organization
-    #Project: tfgm-br-sonarcloud-keys:Project
+env:
+  secrets-manager:
+    LOGIN: tfgm-br-sonarcloud-keys:sonartoken
+    HOST: tfgm-br-sonarcloud-keys:HOST
+    Organization: tfgm-br-sonarcloud-keys:Organization
+    Project: tfgm-br-sonarcloud-keys:Project
 
 phases:
   install:
@@ -26,9 +26,9 @@ phases:
   pre_build:
     commands:
       - echo "Running Sonar Cloud"
-      - sonar-scanner
+      - ls -la
       #- sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
-      - sleep 5
+      #- sleep 5
       #- curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECTKEY > analysis.json
       #- cat analysis.json
 
