@@ -4,10 +4,10 @@ version: 0.2
 
 env:
   secrets-manager:
-    LOGIN: tfgm-br-sonarcloud-keys:sonartoken
-    HOST: tfgm-br-sonarcloud-keys:HOST
-    Organization: tfgm-br-sonarcloud-keys:Organization
-    Project: tfgm-br-sonarcloud-keys:Project
+    LOGIN: tfgm/sonar:sonartoken
+    HOST: tfgm/sonar:HOST
+    Organization: tfgm/sonar:Organization
+    Project: tfgm/sonar:Project
 
 phases:
   install:
