@@ -27,7 +27,7 @@ phases:
     commands:
       - echo "Running Sonar Cloud"
       - ls -la
-      - ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
+      - ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECTKEY > analysis.json
       - cat analysis.json
