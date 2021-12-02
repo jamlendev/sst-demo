@@ -32,6 +32,7 @@ phases:
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECTKEY > analysis.json
       - cat analysis.json
+      - echo "Sonar token"
 
   build:
     commands:
