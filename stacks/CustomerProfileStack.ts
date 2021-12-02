@@ -14,7 +14,7 @@ export default class CustomerProfileStorageStack extends sst.Stack {
         lastName: sst.TableFieldType.STRING,
         externalRef: sst.TableFieldType.STRING,
       },
-      primaryIndex: { partitionKey: "accountId", sortKey: "externalRef" },
+      primaryIndex: { partitionKey: "accountId" },
     })
   }
 }

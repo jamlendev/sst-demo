@@ -24,6 +24,7 @@
     "@serverless-stack/resources": "0.46.0",
     "apollo-server-lambda": "^3.4.0",
     "aws-sdk": "^2.1006.0",
+    "axios": "^0.24.0",
     "moment": "^2.29.1",
     "reflect-metadata": "^0.1.13",
     "status-code-enum": "^1.0.0",

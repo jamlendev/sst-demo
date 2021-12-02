@@ -18,7 +18,10 @@ export default class AuthStack extends sst.Stack {
           postConfirmation: {
             handler: "src/triggers/postAuth.main",
             timeout: 10,
-            environment: { TABLE_NAME: customerProfile.tableName },
+            environment: {
+              TABLE_NAME: customerProfile.tableName,
+              ACT_ENDPOINT: process.env.ACT_ENDPOINT || "",
+            },
             // permissions: [bucket],
           }
         },

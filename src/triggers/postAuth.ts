@@ -1,11 +1,24 @@
 import { PutItemInput } from "aws-sdk/clients/dynamodb"
-import * as uuid from "uuid"
 import dynamoDb from "../util/dynamodb"
+import { ActoraApiClient } from '../clients/actoraApiClient'
+
+const actoraApi = ActoraApiClient.create()
 
 export async function main(event: any) {
   console.log('postAuth trigger', event)
   const data = event.request.userAttributes
-  const externalRef = uuid.v4()
+  // actually want to publish an event to say they have auth'd
+  // then a subscriber would fire off to ACT to create the customer
+  // and then update the cognito record with the externalRef
+
+  const { externalRef } = await actoraApi.customerRegister({
+    forename: data.given_name,
+    surname: data.family_name,
+  })
+  // const card = await actoraApi.cardRequest({
+  //   cardType: 'adult',
+  //   card
+  // })
   const params = {
     TableName: process.env.TABLE_NAME,
     Item: {
