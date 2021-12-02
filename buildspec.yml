@@ -27,12 +27,12 @@ phases:
     commands:
       - echo "Running Sonar Cloud"
       - ls -la
-      - ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=$ORGANIZATION
-      - echo "Successfully executed Sonar Analysis"
-      - sleep 5
-      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECT_KEY > analysis.json
-      - cat analysis.json
-      - echo "Sonar token"
+     # - ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=$ORGANIZATION
+     # - echo "Successfully executed Sonar Analysis"
+     # - sleep 5
+     # - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECT_KEY > analysis.json
+     # - cat analysis.json
+      #- echo "Sonar token"
 
   build:
     commands:
