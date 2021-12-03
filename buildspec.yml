@@ -41,7 +41,7 @@ phases:
       - yarn
       - ls -la
       - echo "Executing Yarn Build"
-      #- yarn sst test
+      - yarn sst test
       - yarn sst build --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
 
   post_build:
@@ -50,7 +50,7 @@ phases:
       - yarn
       - ls -la
       - echo "Executing Yarn Deploy"
-      #- yarn sst deploy --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
-      - yarn sst remove --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
+      - yarn sst deploy --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
+      #- yarn sst remove --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
       
       
