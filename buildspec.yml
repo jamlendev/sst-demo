@@ -24,19 +24,19 @@ phases:
       
   build:
     commands:
+      - echo PRINTING CURRENT DIR
+      - pwd
+      - ls -la
+      - git branch -a
+      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
+      - echo PRINTING OUT THE BRANCH NAME 
+      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
       - echo "Running SST Build Stage"
       - cd ./frontend && yarn && cd ..
       - yarn
       - ls -la
       - echo "Executing Yarn Build"
       - yarn sst test
-      - echo PRINTING CURRENT DIR
-      - ls -la
-      - git init
-      - git branch -a
-      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
-      - echo PRINTING OUT THE BRANCH NAME 
-      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
       - yarn sst build --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
 
   post_build:
