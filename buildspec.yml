@@ -21,7 +21,6 @@ phases:
       - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build project name is $buildProjectName
       - echo Build ID is $CODEBUILD_BUILD_ID
-      - echo Updating semver for build $buildProjectName in SSM using python script
 
   build:
     commands:
