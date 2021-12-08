@@ -2,13 +2,6 @@ version: 0.2
 
 # This buildspec is intended to be run by CodePipeline builds.
 
-env:
-  secrets-manager:
-    SONAR_TOKEN: tfgm/sonar:SONAR_TOKEN
-    HOST: tfgm/sonar:HOST
-    ORGANIZATION: tfgm/sonar:ORGANIZATION
-    PROJECT_KEY: tfgm/sonar:PROJECT_KEY
-
 phases:
   install:
     runtime-versions:
@@ -16,23 +9,10 @@ phases:
     commands:
       # Install yarn if it wasn't already present in the build instance
       - yarn --version || npm -g install yarn
-      - apt-get update
-      - apt-get install -y jq
-      - echo "Installing SonarCloud Dependencies"
-      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-      - unzip ./sonar-scanner-cli-4.6.2.2472-linux.zip
-      - export PATH=$PATH:/sonar-scanner-cli-4.6.2.2472-linux/bin/
       
   pre_build:
     commands:
-      - echo "Running Sonar Cloud"
-      - ls -la
-      - ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=$ORGANIZATION
-      - echo "Successfully Executed Sonar Analysis"
-      - sleep 5
-      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECT_KEY > analysis.json
-      - echo "Generating Analysis Report"
-      - cat analysis.json
+      - echo "Running Pre Build"
 
   build:
     commands:
