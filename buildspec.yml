@@ -21,11 +21,7 @@ phases:
       - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build project name is $buildProjectName
       - echo Build ID is $CODEBUILD_BUILD_ID
-      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
-      - echo PRINTING OUT THE BRANCH NAME 
-      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
       
-
   build:
     commands:
       - echo "Running SST Build Stage"
@@ -36,6 +32,7 @@ phases:
       - yarn sst test
       - echo PRINTING CURRENT DIR
       - ls -la
+      - git init
       - git branch -a
       - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       - echo PRINTING OUT THE BRANCH NAME 
