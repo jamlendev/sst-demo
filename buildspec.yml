@@ -21,7 +21,7 @@ phases:
       - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build project name is $buildProjectName
       - echo Build ID is $CODEBUILD_BUILD_ID
-      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short 2>/dev/null`
+      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -e 's/[feature/]//g' 2>/dev/null `
       - echo PRINTING OUT THE BRANCH NAME 
       - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
       
