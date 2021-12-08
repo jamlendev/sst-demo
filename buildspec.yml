@@ -13,6 +13,15 @@ phases:
   pre_build:
     commands:
       - echo "Running Pre Build"
+      # Derive all of the neccessary variables to pass for stage name and rollbacks
+      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
+      - githubRepoName=$(echo $CODEBUILD_SOURCE_REPO_URL|sed 's|.*/||')
+      - buildProjectName=$(echo $CODEBUILD_BUILD_ARN |sed 's|.*/||' | sed 's/:.*//')
+      - echo GitHub repo name is $githubRepoName
+      - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - echo Build project name is $buildProjectName
+      - echo Build ID is $CODEBUILD_BUILD_ID
+      - echo Updating semver for build $buildProjectName in SSM using python script
 
   build:
     commands:
