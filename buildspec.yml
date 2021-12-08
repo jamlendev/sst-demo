@@ -21,6 +21,10 @@ phases:
       - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build project name is $buildProjectName
       - echo Build ID is $CODEBUILD_BUILD_ID
+      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short 2>/dev/null`
+      - echo PRINTING OUT THE BRANCH NAME 
+      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
+      
 
   build:
     commands:
@@ -30,7 +34,8 @@ phases:
       - ls -la
       - echo "Executing Yarn Build"
       - yarn sst test
-      - yarn sst build --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
+      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
+      - yarn sst build --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
 
   post_build:
     commands:
@@ -38,7 +43,8 @@ phases:
       - yarn
       - ls -la
       - echo "Executing Yarn Deploy"
-      - yarn sst deploy --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
-      #- yarn sst remove --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
+      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH
+      - yarn sst deploy --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
+      #- yarn sst remove --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
       
       
