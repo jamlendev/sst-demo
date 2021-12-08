@@ -6,12 +6,25 @@ export interface Ticket {
   endDate: string
   cost: number
   createdAt: number
+  status: TicketStatus
+}
+
+export enum TicketStatus {
+  Requested = 'requested',
+  Active = 'active',
+  Expired = 'expired',
+}
+
+
+export interface CardInput {
+  isrn: string
 }
 
 export interface TicketInput {
   ticketType: string
   startDate: string
   endDate?: string
+  card?: CardInput
 }
 
 export enum TicketExpiration {

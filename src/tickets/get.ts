@@ -8,7 +8,7 @@ export const main = handler(async (event: any) => {
   console.log(event)
   const accountId = event.requestContext?.authorizer.iam.cognitoIdentity.identityId || event.identity.claims.sub
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.TICKETS_TABLE_NAME,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     Key: {
       accountId,

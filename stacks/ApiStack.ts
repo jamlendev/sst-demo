@@ -1,8 +1,13 @@
 import * as sst from "@serverless-stack/resources"
 
+export interface ApiStackProps extends sst.StackProps {
+  tables: Record<string, sst.Table>
+}
+
 export default class ApiStack extends sst.Stack {
   public api: sst.Api
-  constructor(scope: sst.App, id: string, table: sst.Table, props?: sst.StackProps) {
+
+  constructor(scope: sst.App, id: string, props: ApiStackProps) {
     super(scope, id, props)
 
     // Create the API
@@ -10,7 +15,13 @@ export default class ApiStack extends sst.Stack {
       defaultAuthorizationType: sst.ApiAuthorizationType.AWS_IAM,
       defaultFunctionProps: {
         environment: {
-          TABLE_NAME: table.tableName,
+          TICKETS_TABLE_NAME: props.tables.tickets.tableName,
+          CARDS_TABLE_NAME: props.tables.cards.tableName,
+          CUSTOMERS_TABLE_NAME: props.tables.customers.tableName,
+          ACT_ENDPOINT: process.env.ACT_ENDPOINT || "",
+          ACT_AUTH_ENDPOINT: process.env.ACT_AUTH_ENDPOINT || '',
+          ACT_CLIENT_ID: process.env.ACT_CLIENT_ID || '',
+          ACT_CLIENT_SECRET: process.env.ACT_CLIENT_SECRET || '',
         },
       },
       cors: true,
@@ -21,11 +32,13 @@ export default class ApiStack extends sst.Stack {
         "PUT    /tickets/{id}": "src/tickets/update.main",
         "DELETE /tickets/{id}": "src/tickets/delete.main",
         "GET    /ticket-types": "src/tickets/types.main",
+
+        "GET    /cards": "src/cards/my-cards.main",
       },
     })
 
     // Allow the API to access the table
-    this.api.attachPermissions([table])
+    this.api.attachPermissions(Object.values(props.tables))
     // Show the API endpoint in the output
     this.addOutputs({
       ApiEndpoint: this.api.url,

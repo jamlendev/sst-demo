@@ -6,7 +6,7 @@ import { UpdateItemInput } from "aws-sdk/clients/dynamodb"
 
 export const main = handler(async (event: any, data: Ticket) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.TICKETS_TABLE_NAME,
     // 'Key' defines the partition key and sort key of the item to be updated
     Key: {
       accountId: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
