@@ -21,6 +21,9 @@ export default class AuthStack extends sst.Stack {
             environment: {
               TABLE_NAME: customerProfile.tableName,
               ACT_ENDPOINT: process.env.ACT_ENDPOINT || "",
+              ACT_AUTH_ENDPOINT: process.env.ACT_AUTH_ENDPOINT || '',
+              ACT_CLIENT_ID: process.env.ACT_CLIENT_ID || '',
+              ACT_CLIENT_SECRET: process.env.ACT_CLIENT_SECRET || '',
             },
             // permissions: [bucket],
           }

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
-import moment from 'moment';
+import moment from "moment";
+import { set } from 'lodash';
 import { useHistory } from "react-router-dom";
 import { useFormFields } from "../../lib/hooksLib";
 import LoaderButton from "../../components/LoaderButton";
@@ -18,7 +19,10 @@ export default function Purchase() {
     ticketType: "",
     startDate: moment(),
     endDate: undefined,
-    cost: 0
+    cost: 0,
+    card: {
+      isrn: undefined,
+    },
   });
   const history = useHistory();
 
@@ -30,15 +34,23 @@ export default function Purchase() {
     return API.get("tickets", "/ticket-types");
   }
 
-  async function onLoad () {
+  function getCards() {
+    return API.get("cards", "/");
+  }
+
+  async function onLoad() {
     const types = await getTicketTypes();
-    console.log({types});
+    console.log({ types });
     setTicketTypes(types);
-    setTicketTypeOptions(Object.values(types).map(item => {
-      return (
-        <option key={item.code} value={item.code}>{item.name}</option>
-      );
-    }));
+    setTicketTypeOptions(
+      Object.values(types).map((item) => {
+        return (
+          <option key={item.code} value={item.code}>
+            {item.name}
+          </option>
+        );
+      })
+    );
     setIsLoading(false);
   }
 
@@ -52,20 +64,27 @@ export default function Purchase() {
   const handleSubmit = async (event) => {
     setIsSubmitting(true);
     event.preventDefault();
-    // alert(`type: ${fields.ticketType}, startDate: ${fields.startDate}, endDate: ${fields.endDate}, cost: ${ticketType.cost}`);
     await API.post("tickets", "/tickets", { body: fields });
     setIsSubmitting(false);
     history.push("/tickets");
   };
 
-  const handleSelect=(e)=>{
+  const handleChange = (event) => {
+    // This should be able to be generic and use the controlId as a path to set... but it doesn't work
+    // set(fields, event.target.id, event.target.value);
+    fields.card.isrn = event.target.value;
+    console.log(`Setting ${event.target.id} to ${event.target.value}`, fields);
+    handleFieldChange(event);
+  };
+
+  const handleSelect = (e) => {
     const selectedType = ticketTypes[e.target.value];
     fields.ticketType = selectedType.code;
     selectTicketType(selectedType);
     fields.cost = selectedType.cost;
   };
   const handleDateChange = (e) => {
-    fields.endDate = moment(e.target.value).add({days: ticketType.expires});
+    fields.endDate = moment(e.target.value).add({ days: ticketType.expires });
     handleFieldChange(e);
   };
 
@@ -85,40 +104,56 @@ export default function Purchase() {
     <div className="Purchase">
       <div className="lander">
         <h1>Purchase Tickets</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Ticket Type</Form.Label>
-          <Form.Control as="select" onChange={handleSelect}>
-            <option>Select ticket type</option>
-            {ticketTypeOptions}
-          </Form.Control>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="startDate">
-          <Form.Label>Start Date</Form.Label>
-          <Form.Control type="date" onChange={handleDateChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="endDate">
-          <Form.Label>End Date</Form.Label>
-          <Form.Control plaintext readOnly defaultValue={fields.endDate?.format("DD/MM/YYYY")} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Cost</Form.Label>
-          <Form.Control plaintext readOnly defaultValue={fields.cost > 0 ? fields.cost.toLocaleString('en-GB', {
-            style: 'currency',
-            currency: 'GBP',
-          }) : ""} />
-        </Form.Group>
-        <LoaderButton
-          block
-          size="lg"
-          type="submit"
-          variant="primary"
-          isLoading={isSubmitting}
-          disabled={!validateForm()}
-        >
-          Purchase
-        </LoaderButton>
-      </Form>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Ticket Type</Form.Label>
+            <Form.Control as="select" onChange={handleSelect}>
+              <option>Select ticket type</option>
+              {ticketTypeOptions}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="startDate">
+            <Form.Label>Start Date</Form.Label>
+            <Form.Control type="date" onChange={handleDateChange} />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="endDate">
+            <Form.Label>End Date</Form.Label>
+            <Form.Control
+              plaintext
+              readOnly
+              defaultValue={fields.endDate?.format("DD/MM/YYYY")}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Cost</Form.Label>
+            <Form.Control
+              plaintext
+              readOnly
+              defaultValue={
+                fields.cost > 0
+                  ? fields.cost.toLocaleString("en-GB", {
+                      style: "currency",
+                      currency: "GBP",
+                    })
+                  : ""
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="card.isrn">
+            <Form.Label>Smart Card ISRN</Form.Label>
+            <Form.Control size="lg" type="text" placeholder="Card ISRN" onChange={handleChange} />
+          </Form.Group>
+          <LoaderButton
+            block
+            size="lg"
+            type="submit"
+            variant="primary"
+            isLoading={isSubmitting}
+            disabled={!validateForm()}
+          >
+            Purchase
+          </LoaderButton>
+        </Form>
       </div>
     </div>
   );

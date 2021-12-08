@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
-import { Home, NotFound, Login, Signup, TicketHistory, TicketDetails, Purchase } from "./containers";
+import { Home, NotFound, Login, Signup, TicketHistory, TicketDetails, Purchase, MyCards } from "./containers";
 
 export default function Routes() {
   return (
@@ -17,6 +17,9 @@ export default function Routes() {
         <UnauthenticatedRoute exact path="/signup">
           <Signup />
         </UnauthenticatedRoute>
+        <AuthenticatedRoute exact path="/cards">
+          <MyCards />
+        </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/tickets">
           <TicketHistory />
         </AuthenticatedRoute>

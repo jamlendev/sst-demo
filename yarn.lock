@@ -3529,6 +3529,11 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==
 
+"@types/lodash@^4.14.177":
+  version "4.14.177"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.177.tgz#f70c0d19c30fab101cad46b52be60363c43c4578"
+  integrity sha512-0fDwydE2clKe9MNfvXHBHF9WEahRuj+msTuQqOmAApNORFvhMYZKNGGJdCzuhheVjMps/ti0Ak/iJPACMaevvw==
+
 "@types/long@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
@@ -4213,6 +4218,19 @@ aws-sdk@*, aws-sdk@^2.1006.0, aws-sdk@^2.761.0, aws-sdk@^2.848.0, aws-sdk@^2.979
     url "0.10.3"
     uuid "3.3.2"
     xml2js "0.4.19"
+
+"axios-oauth-client@https://github.com/E-gy/axios-oauth-client#d.ts":
+  version "1.4.3"
+  resolved "https://github.com/E-gy/axios-oauth-client#7f60df5b147f5565cf67f9146756a07da79e9d35"
+  dependencies:
+    qs "^6.10.1"
+
+axios-token-interceptor@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/axios-token-interceptor/-/axios-token-interceptor-0.2.0.tgz#07e79f01f414c196bc84b07556cc84e02ed676bd"
+  integrity sha512-la74OEsXBH1IS9yI6p2oTIynPtBzs0PVUSOwOBgFg2kBwTeDqQ+YJ6jaOWxsTYyqJO510OzHTfnzAn3GFuf9xA==
+  dependencies:
+    lock "^1.1.0"
 
 axios@^0.24.0:
   version "0.24.0"
@@ -7584,6 +7602,11 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
+lock@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/lock/-/lock-1.1.0.tgz#53157499d1653b136ca66451071fca615703fa55"
+  integrity sha1-UxV0mdFlOxNspmRRBx/KYVcD+lU=
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
@@ -8745,6 +8768,13 @@ qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
+
+qs@^6.10.1:
+  version "6.10.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.2.tgz#c1431bea37fc5b24c5bdbafa20f16bdf2a4b9ffe"
+  integrity sha512-mSIdjzqznWgfd4pMii7sHtaYF8rx8861hBO80SraY5GT0XQibWZWJSid0avzHGkDIZLImux2S5mXO0Hfct2QCw==
+  dependencies:
+    side-channel "^1.0.4"
 
 querystring-es3@0.2.1, querystring-es3@^0.2.0:
   version "0.2.1"
