@@ -3,7 +3,6 @@ import { API } from "aws-amplify";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/Card";
-import Jumbotron from "react-bootstrap/Jumbotron";
 import Container from "react-bootstrap/Container";
 import { BsPencilSquare } from "react-icons/bs";
 import { LinkContainer } from "react-router-bootstrap";
@@ -97,37 +96,62 @@ export default function MyCards() {
 
     onLoad();
   }, [isAuthenticated]);
-  function renderCardList() {
-    if (cards.length > 0)
+
+  function activeCard(card) {
     return (
       <>
-        <CardGroup>
-          {cards.map((card) => (
-              <Card bg='light'>
-                <Card.Img variant="top" src="/TFGM.jpeg" />
-                <Card.Body>
-                  <Card.Title>{card.status}</Card.Title>
-                  <Card.Text>
-                    <p>Expires: {card.cardDates.EXPIRY}<br />
-            Issued: {card.cardDates.ISSUED}<br />
-              ISRN: {card.cardNumber.ISRN}</p>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-          ))}
-        </CardGroup>
-      </>
+      <Card bg='light'>
+      <Card.Img variant="top" src="/TFGM.jpeg" />
+      <Card.Body>
+      <Card.Title>{card.status}</Card.Title>
+      <Card.Text>
+      <p>Expires: {card.expiry}<br />
+      Issued: {card.issued}<br />
+      ISRN: {card.cardId}</p>
+      </Card.Text>
+      </Card.Body>
+      </Card>
+        </>
     );
+  }
+
+  function isCardActive(card) {
+    return card.status === 'ACTIVE';
+  }
+  function renderCardList() {
+    if (cards.length > 0) {
+      return (
+        <>
+          <CardGroup>
+            {cards.map((card) =>
+                       <Card bg={isCardActive(card) ? 'light' : 'warning'}>
+                       <Card.Img variant="top" src="/TFGM.jpeg" />
+                       <Card.Body>
+                       <Card.Title>{card.status}</Card.Title>
+                       <Card.Text>
+                       <p>
+                       {isCardActive(card)
+                        ? `Expires: ${card.expiry}<br />
+                        Issued: ${card.issued}<br />
+                        ISRN: ${card.cardId}`
+                        : ''}
+                       </p>
+                       </Card.Text>
+                       </Card.Body>
+                       </Card>
+            )}
+          </CardGroup>
+        </>
+      );
+    }
 
     return (
-      <Jumbotron fluid>
         <Container>
           <h1>No Cards</h1>
           <p>
             You have no Cards associated with your account.
           </p>
         </Container>
-      </Jumbotron>
     );
   }
 

@@ -22,5 +22,13 @@ export default class StorageStack extends sst.Stack {
       },
       primaryIndex: { partitionKey: "accountId", sortKey: "cardId" },
     })
+
+    // this.tables.externalMessageAudit = new sst.Table(this, "ExternalMessageAudit", {
+    //   fields: {
+    //     accountId: sst.TableFieldType.STRING,
+    //     cardId: sst.TableFieldType.STRING,
+    //   },
+    //   primaryIndex: { partitionKey: "accountId", sortKey: "cardId" },
+    // })
   }
 }
