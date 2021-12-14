@@ -1,13 +1,19 @@
+import { inspect } from 'util'
 import axios, { AxiosInstance } from 'axios'
 import * as uuid from "uuid"
 
 export interface ActoraClient {
     customerRegister(payload: CustomerRegistrationPayload): Promise<CustomerResponse>
     cardRequest(payload: CardRegistrationPayload): Promise<CustomerResponse>
-    getCards(customerLink: string): Promise<CardResponse[]>
+    getCards(customerLink: string): Promise<Card[]>
+    getCardByISRN(payload: { customerRef: string, isrn: string }): Promise<Card | undefined>
+    getCardByRef(externalRef: string): Promise<Card | undefined>
+    cardAssociation(customerRef: string, isrn: string): Promise<PostResponses>
+    ticketRequest(payload: TicketRequest): Promise<TicketRequestResponse>
+    getTicket(externalRef: string): Promise<TicketResponse | undefined>
 }
 
-interface CardResponse {
+interface Card {
     cardDates: {
         EXPIRY: string
         ISSUED: string
@@ -23,29 +29,75 @@ interface CardResponse {
     scheme: SchemeLink
     status: CardStatuses
 }
+
 interface CustomerLink {
     link: string
     name: string
 }
+
 interface SchemeLink {
     abbreviation: string
     link: string
 }
+
 enum CardStatuses {
     active = "ACTIVE",
     pending = "PENDING",
 }
 
-interface CardRegistrationPayload {
-    isrn: string
+interface PostRequest {
+    customerRef: string
 }
+type CardRegistrationPayload = PostRequest
+
 interface CustomerRegistrationPayload {
     forename: string
     surname: string
 }
-// interface ActoraCustomerResponse {}
-interface CustomerResponse {
-    externalRef: string | undefined
+
+interface PostResponses {
+    externalRef: string
+}
+
+type CustomerResponse = PostResponses
+
+interface TicketRequest extends PostRequest {
+    card?: {
+        isrn?: string
+        requestRef?: string
+    }
+    code: string
+    startDate: string
+    endDate: string
+}
+
+interface TicketResponse {
+    fulfilmentRequest: {
+        scheme: SchemeLink
+        customer: CustomerLink
+        timestamp: string
+        externalId: string
+        state: {
+            name: string
+            timestamp: string
+        }
+        target: {
+            isITSO: boolean
+            reference: string
+            type: string
+        }
+    }
+}
+
+interface TicketRequestResponse extends PostResponses {
+    card?: Card
+}
+
+const ticketProductMap: Record<string, string> = {
+    'adult-1d-anytime-z1': 'catalogues/bb16720d-4389-4fc3-a398-3137b81915ab/products/0/variants/0',
+    'adult-7d-anytime-z1': 'catalogues/bb16720d-4389-4fc3-a398-3137b81915ab/products/0/variants/40',
+    'adult-1d-anytime-z123': 'catalogues/bb16720d-4389-4fc3-a398-3137b81915ab/products/0/variants/7',
+    'adult-1d-offpeak-z1': 'catalogues/bb16720d-4389-4fc3-a398-3137b81915ab/products/1/variants/0',
 }
 
 export class ActoraApiClient implements ActoraClient {
@@ -66,21 +118,22 @@ export class ActoraApiClient implements ActoraClient {
             timeout: 5000,
             headers: { 'Authorization': `Bearer ${authToken.access_token}` }
         })
-        // this.axiosClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
-        //     if (config.headers['Authorization']) return config
-        //     console.log('getting auth token')
-        //     const auth = await this.getClientCredentials()
-        //     config.headers['Authorization'] = `Bearer ${auth.access_token}`
-        //     console.log(`token expires: ${auth.expires_in}`)
-        //     return config
-        // }, (error) => {
-        //     return Promise.reject(error)
-        // })
+        this.axiosClient.interceptors.request.use(request => {
+            console.info(`${request.method} ${request.url}`, request.data)
+            return request
+        })
+        this.axiosClient.interceptors.response.use(response => {
+            if (response.status === 201)
+                console.info(`${response.config.method} ${response.config.url}: ${response.status} location: ${response.headers['location']}`)
+            else
+                console.info(`${response.config.method} ${response.config.url}: ${response.status}`, response.data)
+            return response
+        })
     }
 
     static async getClientCredentials(): Promise<{ access_token: string, expires_in: number }> {
         const data = ("grant_type=client_credentials")
-      console.log(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
+        console.debug(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
         const result = await axios.post(process.env.ACT_AUTH_ENDPOINT || '', data, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -132,8 +185,8 @@ export class ActoraApiClient implements ActoraClient {
             status: 'VALID',
             scheme: this.scheme
         })
-        const externalRef = result.headers['location'].split('/').pop()
-        console.log({ externalRef })
+        const externalRef = result.headers['location'].split('/').pop() as string
+        console.debug({ externalRef })
         return {
             externalRef
         }
@@ -142,30 +195,129 @@ export class ActoraApiClient implements ActoraClient {
     async customer(id: string): Promise<CustomerResponse> {
         //http POST https://kqqok88an1.execute-api.eu-west-2.amazonaws.com/v1/customers/f5a875f2-b57b-4253-8578-8fa626a8ba42
         const result = await this.axiosClient.get('/customers', { params: { id } })
-        console.log(result)
+        console.debug(result)
         return result.data
     }
 
     async cardRequest(payload: CardRegistrationPayload): Promise<CustomerResponse> {
-        // http POST https://kqqok88an1.execute-api.eu-west-2.amazonaws.com/v1/fulfilment-requests scheme:='{"abbreviation":"tfgm-br-tp","link": "scheme"}' customer:='{"link":"f5a875f2-b57b-4253-8578-8fa626a8ba42"}' actions:='[{"type": "NEW_CARD", "attributes": {"CardType": "WCTS_DESFIRE"}}]'
-        return Promise.resolve({
-            externalRef: uuid.v4()
+        // http POST /fulfilment-requests scheme:='{"abbreviation":"tfgm-br-tp","link": "scheme"} customer:='{"link":"f5a875f2-b57b-4253-8578-8fa626a8ba42"}' actions:='[{"type": "NEW_CARD", "attributes": {"CardType": "WCTS_DESFIRE"}}]'
+        const result = await this.axiosClient.post('/fulfilment-requests', {
+            scheme: this.scheme,
+            customer: { link: `/customers/${payload.customerRef}` },
+            actions: [{
+                type: 'NEW_CARD',
+                attributes: {
+                    CardType: 'GMT_ADULT_DESFIRE'
+                }
+            }]
         })
+        const externalRef = result.headers['location'].split('/').pop() as string
+        console.debug({ externalRef })
+        return {
+            externalRef
+        }
     }
-  async getCards(externalRef: string): Promise<CardResponse[]> {
-    // GET /v1/cards?q=customer.link=/customers/<customer-uuid>
-    console.log(`getting cards for ${externalRef}`)
-    const result = await this.axiosClient.get<{ cards: CardResponse[] }>('/cards', {
-      params: {
-        q: `customer.link=/customers/${externalRef}`
-      }
-    })
-    console.log(result.data.cards)
-    return result.data.cards
-  }
 
-    async ticketPurchase() {
-        // http POST https://kqqok88an1.execute-api.eu-west-2.amazonaws.com/v1/fulfilment-requests scheme:='{"abbreviation":"tfgm-br-tp","link": "scheme"}' customer:='{"link":"f5a875f2-b57b-4253-8578-8fa626a8ba42"}' target:='{"type":"CUSTOMER_MEDIA","isITSO":true}'
+    async getCards(externalRef: string): Promise<Card[]> {
+        // GET /v1/cards?q=customer.link=/customers/<customer-uuid>
+        console.debug(`getting cards for ${externalRef}`)
+        const result = await this.axiosClient.get('/cards', {
+            params: {
+                q: `customer.link=/customers/${externalRef}`
+            }
+        })
+        // console.debug(result.data.cards)
+        return result.data.cards
+    }
+
+    async getCardByISRN(payload: { customerRef: string, isrn: string }): Promise<Card | undefined> {
+        const cards = await this.getCards(payload.customerRef)
+        const card = cards.find(x => x.cardNumber.ISRN === payload.isrn)
+        return Promise.resolve(card)
+    }
+
+    async getCardByRef(externalRef: string): Promise<Card | undefined> {
+        const result = await this.axiosClient.get(`/cards/${externalRef}`)
+        return Promise.resolve(result.data.card)
+    }
+
+    async cardAssociation(customerRef: string, isrn: string): Promise<PostResponses> {
+        const result = await this.axiosClient.post('/cards/card-association-request', {
+            cardNumber: isrn,
+            customerId: customerRef,
+        })
+        const externalRef = result.headers['location'].split('/').pop() as string
+        console.debug({ externalRef })
+        return {
+            externalRef
+        }
+    }
+
+    async ticketRequest(payload: TicketRequest): Promise<TicketRequestResponse> {
+        let card
+        const target = { type: '', reference: '' }
+        console.debug('ticketRequest', payload)
+
+        if (!payload.card?.isrn && !payload.card?.requestRef) {
+            //new card
+            console.debug('new card requested...')
+            const cardRef = await this.cardRequest({ customerRef: payload.customerRef })
+            // card = await this.getCardByRef(cardRef.externalRef)
+            console.debug(`new card: ${cardRef.externalRef}`)
+            target.type = 'CARD_ISSUANCE'
+            target.reference = cardRef.externalRef
+        }
+        if (payload.card?.isrn) {
+            console.debug('got card isrn')
+            // get list of customer cards
+            card = await this.getCardByISRN({ customerRef: payload.customerRef, isrn: payload.card.isrn })
+            // if isrn is not in list of customer cards
+            // POST card-association-request
+            if (!card) {
+                const cardRef = await this.cardAssociation(payload.customerRef, payload.card.isrn)
+                card = await this.getCardByRef(cardRef.externalRef)
+            }
+            target.type = 'CUSTOMER_MEDIA'
+            target.reference = payload.card.isrn
+        }
+        if (payload.card?.requestRef) {
+            target.type = 'CARD_ISSUANCE'
+            target.reference = payload.card.requestRef
+            if (!card) {
+                card = await this.getCardByRef(payload.card.requestRef)
+            }
+        }
+        const data = {
+            actions: [{
+                type: 'ADD',
+                variantExternalId: ticketProductMap[payload.code],
+                attributes: {
+                    EXP: `${payload.endDate}T00:00:00Z`
+                }
+            }],
+            customer: { link: `/customers/${payload.customerRef}` },
+            distributionDetails: {
+                locations: [{ reference: 'location|AllPosts' }],
+                windowOfAvailability: { start: `${payload.startDate}T00:00:00Z`, period: 'P5D' }
+            },
+            scheme: this.scheme,
+            target,
+        }
+        console.debug('POST /fulfilment-requests', data)
+        const result = await this.axiosClient.post('/fulfilment-requests', data)
+        const externalRef = result.headers['location'].split('/').pop() as string
+        console.debug({ externalRef })
+        return {
+            externalRef,
+            card
+        }
+    }
+
+    async getTicket(externalRef: string): Promise<TicketResponse> {
+        console.debug(`getting ticket ${externalRef}`)
+        const result = await this.axiosClient.get(`/fulfilment-requests/${externalRef}`)
+        console.debug(inspect(result.data, { depth: 10 }))
+        return result.data
     }
 }
 
@@ -180,7 +332,31 @@ class NullActoraClient implements ActoraClient {
             externalRef: uuid.v4()
         })
     }
-  async getCards(externalRef: string): Promise<CardResponse[]> {
-    return Promise.resolve([])
-  }
+    async getCards(externalRef: string): Promise<Card[]> {
+        return Promise.resolve([])
+    }
+
+    async getCardByISRN(payload: { customerRef: string, isrn: string }): Promise<Card | undefined> {
+        return Promise.resolve(undefined)
+    }
+
+    async getCardByRef(externalRef: string): Promise<Card | undefined> {
+        return Promise.resolve(undefined)
+    }
+
+    async cardAssociation(customerRef: string, isrn: string): Promise<PostResponses> {
+        return Promise.resolve({
+            externalRef: uuid.v4()
+        })
+    }
+
+    async ticketRequest(payload: TicketRequest): Promise<TicketRequestResponse> {
+        return Promise.resolve({
+            externalRef: uuid.v4(),
+            card: undefined
+        })
+    }
+    async getTicket(externalRef: string): Promise<TicketResponse | undefined> {
+        return Promise.resolve(undefined)
+    }
 }

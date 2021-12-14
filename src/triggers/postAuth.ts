@@ -22,7 +22,7 @@ export async function main(event: any) {
   //   card
   // })
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.CUSTOMERS_TABLE_NAME,
     Item: {
       accountId: data.sub,
       firstName: data.given_name,

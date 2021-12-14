@@ -28,12 +28,13 @@ export default class ApiStack extends sst.Stack {
       routes: {
         "POST   /tickets": "src/tickets/purchase.main",
         "GET    /tickets": "src/tickets/my-tickets.main",
+        "GET    /tickets/{id}/state": "src/tickets/get.state",
         "GET    /tickets/{id}": "src/tickets/get.main",
         "PUT    /tickets/{id}": "src/tickets/update.main",
         "DELETE /tickets/{id}": "src/tickets/delete.main",
         "GET    /ticket-types": "src/tickets/types.main",
 
-        "GET    /cards": "src/cards/my-cards.main",
+        "GET    /cards": "src/cards/my-cards.temp",
       },
     })
 

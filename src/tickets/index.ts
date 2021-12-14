@@ -17,7 +17,10 @@ export enum TicketStatus {
 
 
 export interface CardInput {
-  isrn: string
+  isrn?: string
+  request?: string
+  new: boolean
+  existing: boolean
 }
 
 export interface TicketInput {
