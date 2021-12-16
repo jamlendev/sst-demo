@@ -51,4 +51,3 @@ phases:
       - yarn sst deploy --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
       #- yarn sst remove --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
       
-      
