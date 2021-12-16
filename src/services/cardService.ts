@@ -1,12 +1,14 @@
 import { dynamoDb } from "../util"
-import { PutItemInput } from "aws-sdk/clients/dynamodb";
+import { PutItemInput } from "aws-sdk/clients/dynamodb"
+import moment from 'moment'
 
 export default {
     postCard: async (card: Card): Promise<Card> => {
         const params = {
             TableName: process.env.CARDS_TABLE_NAME,
             Item: {
-                ...card
+              ...card,
+              createdAt: moment().format(),
             }
         } as PutItemInput
         const result = await dynamoDb.put(params)

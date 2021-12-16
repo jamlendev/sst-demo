@@ -35,6 +35,7 @@ export default class ApiStack extends sst.Stack {
         "GET    /ticket-types": "src/tickets/types.main",
 
         "GET    /cards": "src/cards/my-cards.temp",
+        "POST   /cards": "src/cards/my-cards.request",
       },
     })
 

@@ -1,5 +1,8 @@
 import { cognitoUtils, dynamoDb } from "../util"
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
+import { Logger, TLogLevelName } from 'tslog'
+
+const log: Logger = new Logger({name: 'customerProfileService', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
 
 export default {
     getCustomer: async (cognitoIdentity: any): Promise<Customer> => {
@@ -15,7 +18,7 @@ export default {
             throw new Error("Item not found.")
         }
 
-        console.debug(result.Item)
+      log.debug(result.Item)
         // Return the retrieved item
         return result.Item as Customer
     }

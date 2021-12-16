@@ -1,7 +1,11 @@
 import { cognitoUtils, dynamoDb, handler } from "../util"
 import { ActoraApiClient } from '../clients/actoraApiClient'
 import { GetItemInput, QueryInput } from "aws-sdk/clients/dynamodb"
+import { customerProfileService, cardService } from '../services'
+import { CardStatus } from "../services/cardService"
+import { Logger, TLogLevelName } from 'tslog'
 
+const log: Logger = new Logger({minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
 export const func = async (event: any): Promise<any> => {
     const actoraApi = await ActoraApiClient.create()
     /*
@@ -24,9 +28,9 @@ export const func = async (event: any): Promise<any> => {
     return result
 }
 
-export const main = handler(func)
+export const temp = handler(fetch)
 
-export const temp = handler(async (event: any): Promise<any> => {
+async function fetch(event: any): Promise<any> {
     const accountId = cognitoUtils.getAccountId(event.requestContext?.authorizer.iam.cognitoIdentity)
 
     const params = {
@@ -35,9 +39,29 @@ export const temp = handler(async (event: any): Promise<any> => {
         ExpressionAttributeValues: { ":accountId": accountId },
     } as QueryInput
 
+    log.debug(params)
     const result = await dynamoDb.query(params)
     // Return the retrieved item
 
+    log.debug(result.Items)
     // console.debug(result.Items)
     return result.Items
+}
+
+export const request = handler(async (event: any): Promise<void> => {
+    const customer = await customerProfileService.getCustomer(event.requestContext?.authorizer.iam.cognitoIdentity)
+    const actoraApi = await ActoraApiClient.create()
+
+    log.debug('Requesting card from Actora', { customer })
+    const result = await actoraApi.cardRequest({
+        customerRef: customer.externalRef
+    })
+
+    log.debug('Saving card to Dynamo', { externalRef: result.externalRef })
+    await cardService.postCard({
+        accountId: customer.accountId,
+        externalRef: result.externalRef,
+        status: CardStatus.Pending,
+        cardId: result.externalRef,
+    })
 })

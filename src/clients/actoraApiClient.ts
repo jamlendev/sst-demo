@@ -1,6 +1,7 @@
 import { inspect } from 'util'
 import axios, { AxiosInstance } from 'axios'
 import * as uuid from "uuid"
+import { Logger, TLogLevelName } from "tslog"
 
 export interface ActoraClient {
     customerRegister(payload: CustomerRegistrationPayload): Promise<CustomerResponse>
@@ -48,6 +49,7 @@ enum CardStatuses {
 interface PostRequest {
     customerRef: string
 }
+
 type CardRegistrationPayload = PostRequest
 
 interface CustomerRegistrationPayload {
@@ -101,6 +103,7 @@ const ticketProductMap: Record<string, string> = {
 }
 
 export class ActoraApiClient implements ActoraClient {
+  private readonly log: Logger = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
     private axiosClient: AxiosInstance
     private scheme = {
         abbreviation: 'tfgm-br-demo',
@@ -119,21 +122,22 @@ export class ActoraApiClient implements ActoraClient {
             headers: { 'Authorization': `Bearer ${authToken.access_token}` }
         })
         this.axiosClient.interceptors.request.use(request => {
-            console.info(`${request.method} ${request.url}`, request.data)
+            this.log.info(`${request.method?.toUpperCase()} ${request.url}`, inspect(request.data, { depth: 10 }))
             return request
         })
         this.axiosClient.interceptors.response.use(response => {
             if (response.status === 201)
-                console.info(`${response.config.method} ${response.config.url}: ${response.status} location: ${response.headers['location']}`)
+                this.log.info(`${response.config.method?.toUpperCase()} ${response.config.url}: ${response.status} location: ${response.headers['location']}`)
             else
-                console.info(`${response.config.method} ${response.config.url}: ${response.status}`, response.data)
+                this.log.info(`${response.config.method?.toUpperCase()} ${response.config.url}: ${response.status}`, inspect(response.data, { depth: 10 }))
             return response
         })
     }
 
     static async getClientCredentials(): Promise<{ access_token: string, expires_in: number }> {
+        const log = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
         const data = ("grant_type=client_credentials")
-        console.debug(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
+        log.debug(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
         const result = await axios.post(process.env.ACT_AUTH_ENDPOINT || '', data, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -186,7 +190,7 @@ export class ActoraApiClient implements ActoraClient {
             scheme: this.scheme
         })
         const externalRef = result.headers['location'].split('/').pop() as string
-        console.debug({ externalRef })
+        this.log.debug({ externalRef })
         return {
             externalRef
         }
@@ -195,7 +199,7 @@ export class ActoraApiClient implements ActoraClient {
     async customer(id: string): Promise<CustomerResponse> {
         //http POST https://kqqok88an1.execute-api.eu-west-2.amazonaws.com/v1/customers/f5a875f2-b57b-4253-8578-8fa626a8ba42
         const result = await this.axiosClient.get('/customers', { params: { id } })
-        console.debug(result)
+        this.log.debug(result)
         return result.data
     }
 
@@ -212,7 +216,7 @@ export class ActoraApiClient implements ActoraClient {
             }]
         })
         const externalRef = result.headers['location'].split('/').pop() as string
-        console.debug({ externalRef })
+        this.log.debug({ externalRef })
         return {
             externalRef
         }
@@ -220,13 +224,13 @@ export class ActoraApiClient implements ActoraClient {
 
     async getCards(externalRef: string): Promise<Card[]> {
         // GET /v1/cards?q=customer.link=/customers/<customer-uuid>
-        console.debug(`getting cards for ${externalRef}`)
+        this.log.debug(`getting cards for ${externalRef}`)
         const result = await this.axiosClient.get('/cards', {
             params: {
                 q: `customer.link=/customers/${externalRef}`
             }
         })
-        // console.debug(result.data.cards)
+        // this.log.debug(result.data.cards)
         return result.data.cards
     }
 
@@ -247,7 +251,7 @@ export class ActoraApiClient implements ActoraClient {
             customerId: customerRef,
         })
         const externalRef = result.headers['location'].split('/').pop() as string
-        console.debug({ externalRef })
+        this.log.debug({ externalRef })
         return {
             externalRef
         }
@@ -256,19 +260,19 @@ export class ActoraApiClient implements ActoraClient {
     async ticketRequest(payload: TicketRequest): Promise<TicketRequestResponse> {
         let card
         const target = { type: '', reference: '' }
-        console.debug('ticketRequest', payload)
+        this.log.debug('ticketRequest', payload)
 
         if (!payload.card?.isrn && !payload.card?.requestRef) {
             //new card
-            console.debug('new card requested...')
+            this.log.debug('new card requested...')
             const cardRef = await this.cardRequest({ customerRef: payload.customerRef })
             // card = await this.getCardByRef(cardRef.externalRef)
-            console.debug(`new card: ${cardRef.externalRef}`)
+            this.log.debug(`new card: ${cardRef.externalRef}`)
             target.type = 'CARD_ISSUANCE'
             target.reference = cardRef.externalRef
         }
         if (payload.card?.isrn) {
-            console.debug('got card isrn')
+            this.log.debug('got card isrn')
             // get list of customer cards
             card = await this.getCardByISRN({ customerRef: payload.customerRef, isrn: payload.card.isrn })
             // if isrn is not in list of customer cards
@@ -303,10 +307,10 @@ export class ActoraApiClient implements ActoraClient {
             scheme: this.scheme,
             target,
         }
-        console.debug('POST /fulfilment-requests', data)
+        this.log.debug('POST /fulfilment-requests', data)
         const result = await this.axiosClient.post('/fulfilment-requests', data)
         const externalRef = result.headers['location'].split('/').pop() as string
-        console.debug({ externalRef })
+        this.log.debug({ externalRef })
         return {
             externalRef,
             card
@@ -314,9 +318,9 @@ export class ActoraApiClient implements ActoraClient {
     }
 
     async getTicket(externalRef: string): Promise<TicketResponse> {
-        console.debug(`getting ticket ${externalRef}`)
+        this.log.debug(`getting ticket ${externalRef}`)
         const result = await this.axiosClient.get(`/fulfilment-requests/${externalRef}`)
-        console.debug(inspect(result.data, { depth: 10 }))
+        this.log.debug(inspect(result.data, { depth: 10 }))
         return result.data
     }
 }

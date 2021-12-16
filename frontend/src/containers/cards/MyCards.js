@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import ListGroup from "react-bootstrap/ListGroup";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
@@ -164,18 +166,49 @@ export default function MyCards() {
         <div className="cards">
         <h2 className="pb-3 mt-4 mb-3 border-bottom">Your Cards</h2>
           <ListGroup>
-            <LinkContainer to="/cards/request">
-              <ListGroup.Item action className="py-3 text-nowrap text-truncate">
-                <BsPencilSquare size={17} />
-                <span className="ml-2 font-weight-bold">Request new card</span>
-              </ListGroup.Item>
-            </LinkContainer>
+            <RequestNewCard />
             {!isLoading && renderCardList()}
           </ListGroup>
         </div>
     );
   }
 
+  function RequestNewCard() {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const handleContinue = async () => {
+      await API.post('cards', '/cards');
+      const cards = await getCards();
+      setCards(cards);
+      setShow(false);
+    };
+
+    return (
+      <>
+        <Button variant="primary" onClick={handleShow}>
+          <BsPencilSquare size={17} />
+          Request New Card
+        </Button>
+
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>New Card Request</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to request a new card?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleContinue}>
+              Continue
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
 
   return (
       <div className="Home">

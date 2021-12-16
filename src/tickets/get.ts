@@ -2,10 +2,12 @@ import { cognitoUtils, dynamoDb, handler } from "../util"
 import { APIGatewayProxyEventV2 } from "aws-lambda"
 import { GetItemInput } from "aws-sdk/clients/dynamodb"
 import { ActoraApiClient } from "../clients/actoraApiClient"
+import { Logger, TLogLevelName } from 'tslog'
 
+const log: Logger = new Logger({name: 'tickets.get', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
 export const main = handler(async (event: any) => {
 
-    console.debug(event)
+    log.debug(event)
     const accountId = cognitoUtils.getAccountId(event.requestContext?.authorizer.iam.cognitoIdentity)
     const params = {
         TableName: process.env.TICKETS_TABLE_NAME,
@@ -21,7 +23,7 @@ export const main = handler(async (event: any) => {
         throw new Error("Item not found.")
     }
 
-    console.debug(result.Item)
+    log.debug(result.Item)
     // Return the retrieved item
     return result.Item
 })

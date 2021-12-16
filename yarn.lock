@@ -9410,6 +9410,14 @@ source-map-support@^0.5.19, source-map-support@^0.5.20, source-map-support@^0.5.
     buffer-from "^1.0.0"
     source-map "^0.6.0"
 
+source-map-support@^0.5.21:
+  version "0.5.21"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
+  integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
 source-map-url@^0.4.0:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.1.tgz#0af66605a745a5a2f91cf1bbf8a7afbc283dec56"
@@ -9936,6 +9944,13 @@ tslib@^2.0.1, tslib@^2.1.0, tslib@^2.3.0, tslib@~2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
+
+tslog@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/tslog/-/tslog-3.3.0.tgz#868d90a80b915087de18d810d942a6f763bd6cd1"
+  integrity sha512-NP/9xDON5rv8zCS/jDpvi1V+Oplpwd86BBscdEbK6STWRxsSuott33tqly+RCSkFrLVrCuF9qAJKZTPDaR+HbQ==
+  dependencies:
+    source-map-support "^0.5.21"
 
 tsutils@^3.21.0:
   version "3.21.0"

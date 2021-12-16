@@ -7,11 +7,14 @@ import { TicketInput, ticketTypes } from './'
 import moment from 'moment'
 import { ActoraApiClient } from "../clients/actoraApiClient"
 import { CardStatus } from "../services/cardService"
+import { Logger, TLogLevelName } from 'tslog'
+
+const log: Logger = new Logger({name: 'tickets.purchase', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
 
 export const main = handler(async (event: any, data: TicketInput) => {
     const actoraApi = await ActoraApiClient.create()
     data = data || event.arguments.request
-    console.debug(data)
+    log.debug(data)
     const accountId = cognitoUtils.getAccountId(event.requestContext?.authorizer.iam.cognitoIdentity)
 
     const ticketType = ticketTypes[data.ticketType]
@@ -26,7 +29,7 @@ export const main = handler(async (event: any, data: TicketInput) => {
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
     })
-    console.debug({ ticketRequest })
+    log.debug({ ticketRequest })
     if (data.card?.new && ticketRequest) {
         const ticket = await actoraApi.getTicket(ticketRequest.externalRef)
         if (ticket)
@@ -57,7 +60,7 @@ export const main = handler(async (event: any, data: TicketInput) => {
             startDate: startDate.format('YYYY-MM-DD'),
             endDate: endDate.format('YYYY-MM-DD'),
             cost: ticketType.cost,
-            createdAt: Date.now(),
+            createdAt: moment().format(),
             status: 'Requested',
             externalRef: ticketRequest.externalRef,
         },
