@@ -103,7 +103,8 @@ const ticketProductMap: Record<string, string> = {
 }
 
 export class ActoraApiClient implements ActoraClient {
-  private readonly log: Logger = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
+    private readonly log: Logger = new Logger({ name: 'ActoraApiClient', displayFunctionName: false, minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
+
     private axiosClient: AxiosInstance
     private scheme = {
         abbreviation: 'tfgm-br-demo',
@@ -135,7 +136,7 @@ export class ActoraApiClient implements ActoraClient {
     }
 
     static async getClientCredentials(): Promise<{ access_token: string, expires_in: number }> {
-        const log = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
+        const log = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
         const data = ("grant_type=client_credentials")
         log.debug(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
         const result = await axios.post(process.env.ACT_AUTH_ENDPOINT || '', data, {
