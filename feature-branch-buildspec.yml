@@ -18,6 +18,7 @@ phases:
       - pwd
       - ls -la 
       - git branch -a
+      - echo ""
       
   build:
     commands:
