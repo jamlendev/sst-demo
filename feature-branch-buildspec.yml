@@ -29,9 +29,9 @@ phases:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - FEATURE_STAGE=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
+      - FEATURE_STAGE=`$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       - export FEATURE_STAGE
-      - echo $FEATURE_STAGE
+      - echo "$FEATURE_STAGE"
 
   post_build:
     commands:
