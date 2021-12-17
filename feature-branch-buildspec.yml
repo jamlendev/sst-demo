@@ -14,6 +14,8 @@ phases:
       - echo "Printing out CodeBuild Source Directory"
       - echo Branch Name is $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_SRC_DIR
+      - echo $CODEBUILD_SOURCE_VERSION
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - cd $CODEBUILD_SRC_DIR
       - pwd
       - ls -la 
