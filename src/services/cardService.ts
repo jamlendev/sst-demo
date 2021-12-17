@@ -1,12 +1,15 @@
 import { dynamoDb } from "../util"
 import { PutItemInput } from "aws-sdk/clients/dynamodb"
 import moment from 'moment'
+import * as uuid from "uuid"
 
 export default {
-    postCard: async (card: Card): Promise<Card> => {
+  postCard: async (accountId: string, card: CardInput): Promise<Card> => {
         const params = {
             TableName: process.env.CARDS_TABLE_NAME,
             Item: {
+              accountId,
+              cardId: uuid.v4(),
               ...card,
               createdAt: moment().format(),
             }
@@ -17,13 +20,16 @@ export default {
     }
 }
 
-export interface Card {
+
+export interface CardInput {
+  status: CardStatus
+  issued?: string
+  expiry?: string
+  externalRef: string
+}
+export interface Card extends CardInput {
     accountId: string
     cardId: string
-    status: CardStatus
-    issued?: string
-    expiry?: string
-    externalRef: string
 }
 
 export enum CardStatus {

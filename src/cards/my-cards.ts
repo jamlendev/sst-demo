@@ -5,7 +5,7 @@ import { customerProfileService, cardService } from '../services'
 import { CardStatus } from "../services/cardService"
 import { Logger, TLogLevelName } from 'tslog'
 
-const log: Logger = new Logger({minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
+const log: Logger = new Logger({ minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
 export const func = async (event: any): Promise<any> => {
     const actoraApi = await ActoraApiClient.create()
     /*
@@ -58,10 +58,8 @@ export const request = handler(async (event: any): Promise<void> => {
     })
 
     log.debug('Saving card to Dynamo', { externalRef: result.externalRef })
-    await cardService.postCard({
-        accountId: customer.accountId,
+    await cardService.postCard(customer.accountId, {
         externalRef: result.externalRef,
         status: CardStatus.Pending,
-        cardId: result.externalRef,
     })
 })

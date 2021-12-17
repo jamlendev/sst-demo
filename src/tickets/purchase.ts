@@ -6,10 +6,10 @@ import { customerProfileService, cardService } from '../services'
 import { TicketInput, ticketTypes } from './'
 import moment from 'moment'
 import { ActoraApiClient } from "../clients/actoraApiClient"
-import { CardStatus } from "../services/cardService"
+import { Card, CardStatus } from "../services/cardService"
 import { Logger, TLogLevelName } from 'tslog'
 
-const log: Logger = new Logger({name: 'tickets.purchase', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
+const log: Logger = new Logger({ name: 'tickets.purchase', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
 
 export const main = handler(async (event: any, data: TicketInput) => {
     const actoraApi = await ActoraApiClient.create()
@@ -24,30 +24,27 @@ export const main = handler(async (event: any, data: TicketInput) => {
     const customer = await customerProfileService.getCustomer(event.requestContext?.authorizer.iam.cognitoIdentity)
     const ticketRequest = await actoraApi.ticketRequest({
         customerRef: customer.externalRef,
-        card: data.card,
+        card: { isrn: data.card?.isrn, requestRef: data.card?.request },
         code: ticketType.code,
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
     })
     log.debug({ ticketRequest })
+    let card: Card | undefined = undefined
     if (data.card?.new && ticketRequest) {
         const ticket = await actoraApi.getTicket(ticketRequest.externalRef)
         if (ticket)
-            await cardService.postCard({
-                accountId: customer.accountId,
+            card = await cardService.postCard(customer.accountId, {
                 externalRef: ticket.fulfilmentRequest.target.reference,
                 status: CardStatus.Pending,
-                cardId: ticket.fulfilmentRequest.target.reference,
             })
     }
     if (data.card?.existing && ticketRequest.card) {
-        await cardService.postCard({
-            accountId: customer.accountId,
+        card = await cardService.postCard(customer.accountId, {
             externalRef: ticketRequest.card.id,
             status: CardStatus.Active,
             issued: ticketRequest.card.cardDates.ISSUED,
             expiry: ticketRequest.card.cardDates.EXPIRY,
-            cardId: ticketRequest.card.cardNumber.ISRN,
         })
     }
 
@@ -63,6 +60,7 @@ export const main = handler(async (event: any, data: TicketInput) => {
             createdAt: moment().format(),
             status: 'Requested',
             externalRef: ticketRequest.externalRef,
+            cardId: card?.cardId
         },
     } as PutItemInput
 

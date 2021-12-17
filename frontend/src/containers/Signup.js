@@ -10,10 +10,10 @@ import "./Signup.css";
 
 export default function Signup() {
   const [fields, handleFieldChange] = useFormFields({
-    email: "",
-    password: "",
     firstName: "",
     lastName: "",
+    email: "",
+    password: "",
     confirmPassword: "",
     confirmationCode: "",
   });
@@ -118,7 +118,6 @@ export default function Signup() {
         <Form.Group controlId="lastName" size="lg">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
-            autoFocus
             type="text"
             value={fields.lastName}
             onChange={handleFieldChange}
@@ -127,7 +126,6 @@ export default function Signup() {
         <Form.Group controlId="email" size="lg">
           <Form.Label>Email</Form.Label>
           <Form.Control
-            autoFocus
             type="email"
             value={fields.email}
             onChange={handleFieldChange}

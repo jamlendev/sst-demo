@@ -288,9 +288,9 @@ export class ActoraApiClient implements ActoraClient {
         if (payload.card?.requestRef) {
             target.type = 'CARD_ISSUANCE'
             target.reference = payload.card.requestRef
-            if (!card) {
-                card = await this.getCardByRef(payload.card.requestRef)
-            }
+            // if (!card) {
+            //     card = await this.getCardByRef(payload.card.requestRef)
+            // }
         }
         const data = {
             actions: [{

@@ -75,7 +75,8 @@ export default function Purchase() {
   function validateForm() {
     return true;
     // return (
-    //   fields.ticketType.length > 0 //&& fields.startDate.length > 0
+    //   fields.ticketType.length > 0
+    //     && (fields.card.new || fields.card.existing)
     // );
   }
 

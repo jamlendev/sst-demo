@@ -89,15 +89,11 @@ export default function TicketHistory() {
                     <Badge onClick={handleShow} externalRef={externalRef} className={`mb-3 ${statusToBadgeColour(status)}`}>
                       {status}
                     </Badge>
-                    <Modal show={show} onHide={handleClose}>
+                    <Modal show={show} size="lg" onHide={handleClose}>
                       <Modal.Header>
                         <Modal.Title>Request details</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                        <Row>
-                          <Col xs>External Ref:</Col>
-                          <Col md="auto">{externalRef}</Col>
-                        </Row>
                         <Row>
                           <pre><code>
                    {JSON.stringify(ticketState.fulfilmentRequest, null, 2)}

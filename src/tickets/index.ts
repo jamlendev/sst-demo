@@ -7,6 +7,7 @@ export interface Ticket {
   cost: number
   createdAt: number
   status: TicketStatus
+  cardId: string
 }
 
 export enum TicketStatus {
