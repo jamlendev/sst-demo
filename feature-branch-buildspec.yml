@@ -1,1 +1,21 @@
+version: 0.2
 
+# This buildspec is intended to be run by CodePipeline Feature Branch Builds
+
+phases:
+  install:
+    commands:
+      # Install yarn if it wasn't already present in the build instance
+      - apt-get install -y git
+      
+  pre_build:
+    commands:
+      - echo "Running Git Checkout Feature"
+      
+  build:
+    commands:
+      - echo "Running Build Stage"
+
+  post_build:
+    commands:
+      - echo "Running post build"
