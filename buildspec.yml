@@ -41,3 +41,6 @@ phases:
       - echo "Executing Yarn Deploy"
       - yarn sst deploy --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
       #- yarn sst remove --stage aws-BRD-JIRA-22 --region eu-west-2 --verbose
+      
+      
+      
