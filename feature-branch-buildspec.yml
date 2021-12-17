@@ -11,6 +11,13 @@ phases:
   pre_build:
     commands:
       - echo "Running Git Checkout Feature"
+      - echo "Printing out CodeBuild Source Directory"
+      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
+      - echo $CODEBUILD_SRC_DIR
+      - cd $CODEBUILD_SRC_DIR
+      - pwd
+      - ls -la 
+      - git branch -a
       
   build:
     commands:
