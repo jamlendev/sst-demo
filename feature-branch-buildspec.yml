@@ -19,10 +19,10 @@ phases:
       - cd $CODEBUILD_SRC_DIR
       - pwd
       - ls -la 
+      - git log | head -100
+      - git status
       - git branch -a
       - echo ""
-      
-      
       
   build:
     commands:
