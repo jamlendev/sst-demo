@@ -25,6 +25,7 @@ phases:
       - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       - echo PRINTING OUT THE BRANCH NAME 
       - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
       
 
   build:
@@ -37,6 +38,7 @@ phases:
       - yarn sst test
       - echo PRINTING CURRENT DIR
       - ls -la
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       - echo PRINTING OUT THE BRANCH NAME 
       - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
