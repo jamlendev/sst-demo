@@ -12,7 +12,7 @@ phases:
       - yarn --version || npm -g install yarn
       - TAG=$(echo "This is test")
       - export FEATURE_BRANCH_NAME
-      - $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p' >> $FEATURE_BRANCH_NAME
       - echo $FEATURE_BRANCH_NAME
