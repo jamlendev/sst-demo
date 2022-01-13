@@ -9,6 +9,7 @@ phases:
     commands:
       # Install yarn if it wasn't already present in the build instance
       - yarn --version || npm -g install yarn
+      - apt-get install -y git
       
   pre_build:
     commands:
@@ -22,6 +23,7 @@ phases:
       - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build project name is $buildProjectName
       - echo Build ID is $CODEBUILD_BUILD_ID
+      - git checkout $CODEBUILD_RESOLVED_SOURCE_VERSION
       - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       - echo PRINTING OUT THE BRANCH NAME 
       - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
