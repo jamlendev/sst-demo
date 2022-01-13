@@ -34,7 +34,7 @@ phases:
       - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       #- echo "${FEATURE_STAGE}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - echo "${FEATURE_STAGE_NAME}"
+      - echo $FEATURE_STAGE_NAME
       #- echo "Running SST Build Stage"
       #- cd ./frontend && yarn && cd ..
       #- yarn
