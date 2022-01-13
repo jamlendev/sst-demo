@@ -38,9 +38,8 @@ phases:
       - echo Build started on $TAG
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      - echo $FEATURE_STAGE_NAME | sed -e 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - TAG=$(echo "This is test")
       - echo $FEATURE_STAGE_NAME
+      - echo $FEATURE_STAGE_NAME | sed 's/.*\(BRD-[0-9]*\).*/\1/p'
       - echo $TAG
       #- FEATURE_STAGE_NAME=`$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       #- export FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
