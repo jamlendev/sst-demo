@@ -12,6 +12,7 @@ phases:
       
   pre_build:
     commands:
+      - echo "new line"
       - echo "Running Pre Build"
       # Derive all of the neccessary variables to pass for stage name and rollbacks
       - echo Branch Name is $CODEBUILD_SOURCE_VERSION
@@ -48,6 +49,6 @@ phases:
       - ls -la
       - echo "Executing Yarn Deploy"
       - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH
-      - yarn sst deploy --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
-      #- yarn sst remove --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
+      # - yarn sst deploy --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
+      # - yarn sst remove --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
       
