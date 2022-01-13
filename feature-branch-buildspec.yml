@@ -10,6 +10,7 @@ phases:
       # Install yarn if it wasn't already present in the build instance
       - apt-get install -y git
       - yarn --version || npm -g install yarn
+      - TAG=$(echo "This is test")
       
   pre_build:
     commands:
@@ -25,14 +26,17 @@ phases:
       - git log | head -100
       - git status
       - git branch -a
-      - echo ""
+      - echo "Enf of PreBuild"
+      - echo $TAG
       
   build:
     commands:
+      - echo Entered the build phase...
+      - echo Build started on $TAG
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - export FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
+      #- export FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       #- echo "${FEATURE_STAGE}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - echo $FEATURE_STAGE_NAME
       #- echo "Running SST Build Stage"
