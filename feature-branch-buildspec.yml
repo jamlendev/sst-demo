@@ -11,7 +11,7 @@ phases:
       - apt-get install -y git
       - yarn --version || npm -g install yarn
       - TAG=$(echo "This is test")
-      - FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
+      - FEATURE_BRANCH_NAME=$CODEBUILD_WEBHOOK_HEAD_REF
       
   pre_build:
     commands:
@@ -29,7 +29,7 @@ phases:
       - git branch -a
       - echo "End of PreBuild"
       - echo $TAG
-      - echo $FEATURE_STAGE_NAME
+      - echo $FEATURE_BRANCH_NAME
       
   build:
     commands:
@@ -37,9 +37,11 @@ phases:
       - echo Build started on $TAG
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      - echo $FEATURE_STAGE_NAME
-      #- echo $FEATURE_STAGE_NAME | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
+      - echo $FEATURE_BRANCH_NAME
+      - echo $FEATURE_BRANCH_NAME | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - echo $TAG
+      - STAGE_NAME=$FEATURE_BRANCH_NAME
+      - echo $STAGE_NAME
       #- FEATURE_STAGE_NAME=`$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
       #- export FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       #- echo "${FEATURE_STAGE}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
