@@ -13,22 +13,13 @@ phases:
       
   pre_build:
     commands:
-      - echo "Running Pre Build"
+      - echo "Running Git Checkout Feature"
+      - echo "Printing out CodeBuild Source Directory"
       - echo Branch Name is $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      # Derive all of the neccessary variables to pass for stage name and rollbacks
-      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
-      - githubRepoName=$(echo $CODEBUILD_SOURCE_REPO_URL|sed 's|.*/||')
-      - buildProjectName=$(echo $CODEBUILD_BUILD_ARN |sed 's|.*/||' | sed 's/:.*//')
-      - echo GitHub repo name is $githubRepoName
-      - echo GitHub source version is $CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo Build project name is $buildProjectName
-      - echo Build ID is $CODEBUILD_BUILD_ID
-      - export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
-      - echo PRINTING OUT THE BRANCH NAME 
-      - echo BRANCH NAME IS $CODEBUILD_GIT_BRANCH_NAME
+      - cd $CODEBUILD_SRC_DIR
       - pwd
       - ls -la 
       - git log | head -100
@@ -40,21 +31,16 @@ phases:
     commands:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - echo "${FEATURE_STAGE_NAME}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - echo "${FEATURE_STAGE_NAME}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
-      - echo "Running SST Build Stage"
-      - cd ./frontend && yarn && cd ..
-      - yarn
-      - ls -la
-      - echo "Executing Yarn Build"
-      - yarn sst test
-      - echo PRINTING CURRENT DIR
-      - pwd
-      - ls -la
-      #- export CODEBUILD_GIT_BRANCH_NAME=`git symbolic-ref HEAD --short | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'`
-      - echo FEATURE STAGE NAME IS $FEATURE_STAGE_NAME
-      - yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+      #- echo "${FEATURE_STAGE}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
+      - echo "${FEATURE_STAGE_NAME}"
+      #- echo "Running SST Build Stage"
+      #- cd ./frontend && yarn && cd ..
+      #- yarn
+      #- yarn sst test
+      #- yarn sst build --stage $CODEBUILD_GIT_BRANCH_NAME --region eu-west-2 --verbose
+      
 
   post_build:
     commands:
