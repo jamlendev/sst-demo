@@ -13,7 +13,6 @@ phases:
       - TAG=$(echo "This is test")
       - export FEATURE_BRANCH_NAME
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      - echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       - FEATURE_BRANCH_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
       - echo $FEATURE_BRANCH_NAME
      
@@ -36,6 +35,7 @@ phases:
       - echo Build started on $TAG
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $FEATURE_BRANCH_NAME
       #- export FEATURE_STAGE_NAME=$CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       #- echo "${FEATURE_STAGE}" | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p'
       #- echo "Running SST Build Stage"
@@ -48,3 +48,4 @@ phases:
   post_build:
     commands:
       - echo "Running post build"
+      - echo $FEATURE_BRANCH_NAME
