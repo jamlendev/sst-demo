@@ -1,1 +1,26 @@
+version: 0.2
 
+# This buildspec is intended to be run by CodePipeline Feature Branch Builds
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14  
+    commands:
+      # Install yarn if it wasn't already present in the build instance
+      - apt-get install -y git
+      - yarn --version || npm -g install yarn
+
+  pre_build:
+    commands:
+      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+
+  build:
+    commands:
+      - echo "Running Build Stage"
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      
+  post_build:
+    commands:
+      - echo "Running post build"
