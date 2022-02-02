@@ -27,8 +27,7 @@ phases:
       - git checkout main
       - git branch -a
       - ls -la
-      - cd .git && chmod 755 *
-      - cd
+      - cd .git && chmod 755 * && cd .. 
       - git log
       #- git log main --merges --oneline
   post_build:
