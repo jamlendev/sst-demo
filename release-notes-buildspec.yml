@@ -14,7 +14,7 @@ phases:
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo $AWS_REGION
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echp $CODEBUILD_SOURCE_REPO_URL
+      - echo $CODEBUILD_SOURCE_REPO_URL
 
   build:
     commands:
