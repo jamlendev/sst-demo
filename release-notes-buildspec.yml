@@ -24,7 +24,8 @@ phases:
       - echo $FEATURE_STAGE_NAME
       - git branch -a
       #- git log --merges --first-parent main --pretty=format:"%h %<(10,trunc)%aN %C(white)%<(15)%ar%Creset %C(red bold)%<(15)%D%Creset %s"
-      - git log --merges --oneline
+      - git checkout main
+      - git log main --merges --oneline
   post_build:
     commands:
       - echo "Running post build"
