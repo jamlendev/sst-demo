@@ -23,7 +23,8 @@ phases:
       - FEATURE_STAGE_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
       - echo $FEATURE_STAGE_NAME
       - git branch -a
-      - git log --merges --first-parent main --pretty=format:"%h %<(10,trunc)%aN %C(white)%<(15)%ar%Creset %C(red bold)%<(15)%D%Creset %s"
+      #- git log --merges --first-parent main --pretty=format:"%h %<(10,trunc)%aN %C(white)%<(15)%ar%Creset %C(red bold)%<(15)%D%Creset %s"
+      - git log main --merges --oneline
   post_build:
     commands:
       - echo "Running post build"
