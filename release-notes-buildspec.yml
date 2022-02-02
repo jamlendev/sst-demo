@@ -5,7 +5,7 @@ phases:
   install:
     commands:
       # Install yarn if it wasn't already present in the build instance
-      - apt-get install -y git
+      - yum install -y git
       - yarn --version || npm -g install yarn
 
   pre_build:
