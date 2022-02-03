@@ -9,6 +9,22 @@ export class WorkshopPipelineStack extends cdk.Stack {
         new codecommit.Repository(this, 'TestRepo', {
             repositoryName: "TestRepo"
         });
+      
         // Pipeline code goes here
+        // The basic pipeline declaration. This sets the initial structure
+        // of our pipeline
+         const pipeline = new CodePipeline(this, 'Pipeline', {
+              pipelineName: 'CDKPipeline',
+              synth: new CodeBuildStep('SynthStep', {
+                      input: CodePipelineSource.codeCommit(repo, 'master'),
+                      installCommands: [
+                          'yarn install -g aws-cdk'
+                      ],
+                      commands: [
+                          'echo Build ID is $CODEBUILD_BUILD_ID'
+                      ]
+                  }
+              )
+          });
     }
 }
