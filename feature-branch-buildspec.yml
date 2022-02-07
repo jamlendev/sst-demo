@@ -15,6 +15,7 @@ phases:
     commands:
       - echo Branch Name is $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_BASE_REF
       - export FEATURE_STAGE_NAME
       - FEATURE_STAGE_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
       - echo $FEATURE_STAGE_NAME
