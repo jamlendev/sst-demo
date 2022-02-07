@@ -39,3 +39,4 @@ phases:
       - echo "Running post build"
       - echo $FEATURE_BRANCH_NAME
       #- yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+
