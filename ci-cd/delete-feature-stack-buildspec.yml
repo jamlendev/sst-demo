@@ -5,7 +5,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14  
+      nodejs: 14
     commands:
       # Install yarn if it wasn't already present in the build instance
       - apt-get install -y git

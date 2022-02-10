@@ -14,7 +14,6 @@ export default function main(app: sst.App): void {
   app.setDefaultFunctionProps({
     runtime: "nodejs14.x"
   });
-
   const storageStack = new StorageStack(app, "storage")
   const customerProfileStorageStack = new CustomerProfileStorageStack(app, "customerProfile")
   const apiStack = new ApiStack(app, "api", { tables: { ...storageStack.tables, customers: customerProfileStorageStack.customers } })

@@ -5,7 +5,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      nodejs: 14  
     commands:
       # Install yarn if it wasn't already present in the build instance
       - apt-get install -y git
@@ -33,11 +33,10 @@ phases:
       #- yarn sst test
       - echo $FEATURE_STAGE_NAME
       - yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
-
+      
   post_build:
     commands:
       - echo "Running post build"
       - echo $FEATURE_BRANCH_NAME
       - yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
-      - echo "Stack with name:" $FEATURE_STAGE_NAME
-
+      # - yarn sst remove --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
