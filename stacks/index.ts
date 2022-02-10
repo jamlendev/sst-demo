@@ -5,7 +5,6 @@ import StorageStack from "./StorageStack"
 import ApiStack from "./ApiStack"
 import AuthStack from "./AuthStack"
 import FrontendStack from "./FrontendStack"
-import CodePipelineStack from "./CodePipelineStack"
 // import ApolloApiStack from "./ApolloApiStack";
 // import AppSyncStack from "./AppSyncStack";
 import CustomerProfileStorageStack from "./CustomerProfileStack";
@@ -15,7 +14,6 @@ export default function main(app: sst.App): void {
   app.setDefaultFunctionProps({
     runtime: "nodejs14.x"
   });
-  const codePipelineStack = new CodePipelineStack(app, "pipeline")
   const storageStack = new StorageStack(app, "storage")
   const customerProfileStorageStack = new CustomerProfileStorageStack(app, "customerProfile")
   const apiStack = new ApiStack(app, "api", { tables: { ...storageStack.tables, customers: customerProfileStorageStack.customers } })
