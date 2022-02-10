@@ -1,0 +1,15 @@
+# dependencies
+node_modules
+/frontend/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+
+# sst build output
+.build
+.sst
+
+.yarn/*

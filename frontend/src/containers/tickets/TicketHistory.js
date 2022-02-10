@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
+import Badge from "react-bootstrap/Badge";
+import Button from "react-bootstrap/Button";
+import Toast from "react-bootstrap/Toast";
+import Modal from "react-bootstrap/Modal";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import CardGroup from "react-bootstrap/Card";
-import Jumbotron from "react-bootstrap/Jumbotron";
 import Container from "react-bootstrap/Container";
 import { BsPencilSquare } from "react-icons/bs";
 import { LinkContainer } from "react-router-bootstrap";
@@ -16,6 +22,15 @@ export default function TicketHistory() {
   const { isAuthenticated } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const [tickets, setTickets] = useState([]);
+  const [show, setShow] = useState(false);
+  const [ticketState, setTicketState] = useState({});
+
+  const handleClose = () => setShow(false);
+  const handleShow = async (externalRef) => {
+    const status = await getTicketState(externalRef);
+    setTicketState(status);
+    return setShow(true);
+  };
 
   useEffect(() => {
     async function onLoad() {
@@ -39,9 +54,25 @@ export default function TicketHistory() {
   function getTickets() {
     return API.get("tickets", "/tickets");
   }
+  async function getTicketState(props) {
+    try {
+      const externalRef = props.target.attributes?.externalRef?.value;
+      const state = await API.get('tickets', `/tickets/${externalRef}/state`);
+      console.log(state);
+      return state;
+    } catch (e) {
+     return onError(e);
+    }
+  }
   function isExpired(endDate) {
     //This would be on the graphQL response
     return moment().isSameOrBefore(moment(endDate), 'day');
+  }
+  function statusToBadgeColour(status) {
+    switch (status) {
+      case 'Requested': return 'bg-primary';
+      default: return 'bg-warning';
+    }
   }
 
   function renderTicketList(notes) {
@@ -49,12 +80,33 @@ export default function TicketHistory() {
     return (
       <>
         <CardGroup>
-          {tickets.map(({ ticketId, ticketType, startDate, endDate, cost, createdAt }) => (
-            <LinkContainer key={ticketId} to={`/tickets/${ticketId}`}>
+          {tickets.map(({ ticketId, ticketType, startDate, endDate, cost, createdAt, status, externalRef }) => (
               <Card bg={isExpired(endDate) ? 'light' : 'warning' }>
-                <Card.Img variant="top" src="/TFGM.jpeg" />
+                <Card.Img variant="top" src="/TFGM.jpeg"/>
                 <Card.Body>
-                  <Card.Title>{ticketType.name}</Card.Title>
+                  <Card.Title>
+                    {ticketType.name}&nbsp;
+                    <Badge onClick={handleShow} externalRef={externalRef} className={`mb-3 ${statusToBadgeColour(status)}`}>
+                      {status}
+                    </Badge>
+                    <Modal show={show} size="lg" onHide={handleClose}>
+                      <Modal.Header>
+                        <Modal.Title>Request details</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Row>
+                          <pre><code>
+                   {JSON.stringify(ticketState.fulfilmentRequest, null, 2)}
+                 </code></pre>
+                        </Row>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                          Close
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Card.Title>
                   <Card.Text>
                     <p>Expires: {endDate}<br />
                     Starts: {startDate} </p>
@@ -67,21 +119,18 @@ export default function TicketHistory() {
                   })}</small>
                 </Card.Footer>
               </Card>
-            </LinkContainer>
           ))}
         </CardGroup>
       </>
     );
 
     return (
-      <Jumbotron fluid>
         <Container>
           <h1>No tickets</h1>
           <p>
             You have no previously purchased tickets.
           </p>
         </Container>
-      </Jumbotron>
     );
   }
 

@@ -5,13 +5,15 @@ import { ActoraApiClient } from '../clients/actoraApiClient'
 const actoraApi = ActoraApiClient.create()
 
 export async function main(event: any) {
-  console.log('postAuth trigger', event)
+  const accountId = event.requestContext?.authorizer.iam.cognitoIdentity.identityId
+  console.log('postAuth trigger', event, accountId)
   const data = event.request.userAttributes
   // actually want to publish an event to say they have auth'd
   // then a subscriber would fire off to ACT to create the customer
   // and then update the cognito record with the externalRef
 
-  const { externalRef } = await actoraApi.customerRegister({
+  const api = await actoraApi
+  const { externalRef } = await api.customerRegister({
     forename: data.given_name,
     surname: data.family_name,
   })
@@ -20,7 +22,7 @@ export async function main(event: any) {
   //   card
   // })
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: process.env.CUSTOMERS_TABLE_NAME,
     Item: {
       accountId: data.sub,
       firstName: data.given_name,

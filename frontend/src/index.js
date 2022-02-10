@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import config from './config';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 
@@ -23,6 +24,11 @@ Amplify.configure({
   },
   API: {
     endpoints: [
+      {
+        name: "cards",
+        endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION
+      },
       {
         name: "tickets",
         endpoint: config.apiGateway.URL,

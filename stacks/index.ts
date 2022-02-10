@@ -18,7 +18,7 @@ export default function main(app: sst.App): void {
   const codePipelineStack = new CodePipelineStack(app, "pipeline")
   const storageStack = new StorageStack(app, "storage")
   const customerProfileStorageStack = new CustomerProfileStorageStack(app, "customerProfile")
-  const apiStack = new ApiStack(app, "api", storageStack.tickets)
+  const apiStack = new ApiStack(app, "api", { tables: { ...storageStack.tables, customers: customerProfileStorageStack.customers } })
   // const apolloStack = new ApolloApiStack(app, "graphql", storageStack.tickets)
   const authStack = new AuthStack(app, "auth", apiStack.api, customerProfileStorageStack.customers)
   // new AppSyncStack(app, "graphql", storageStack.tickets, authStack.auth)
