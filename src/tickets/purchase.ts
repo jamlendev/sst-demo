@@ -21,7 +21,7 @@ export const main = handler(async (event: any, data: TicketInput) => {
     const startDate = moment(data.startDate)
     const endDate = moment(data.startDate).add({ days: ticketType.expires });
 
-    const customer = await customerProfileService.getCustomer(event.requestContext?.authorizer.iam.cognitoIdentity)
+  const customer = await customerProfileService.getCustomer(event.requestContext?.authorizer.iam.cognitoIdentity)
     const ticketRequest = await actoraApi.ticketRequest({
         customerRef: customer.externalRef,
         card: { isrn: data.card?.isrn, requestRef: data.card?.request },

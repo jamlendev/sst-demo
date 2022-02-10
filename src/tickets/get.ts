@@ -5,6 +5,7 @@ import { ActoraApiClient } from "../clients/actoraApiClient"
 import { Logger, TLogLevelName } from 'tslog'
 
 const log: Logger = new Logger({name: 'tickets.get', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug'})
+
 export const main = handler(async (event: any) => {
 
     log.debug(event)
