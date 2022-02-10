@@ -15,7 +15,6 @@ export default function main(app: sst.App): void {
   app.setDefaultFunctionProps({
     runtime: "nodejs14.x"
   });
-
   const eventBusStack = new EventingStack(app, "eventing")
   const storageStack = new StorageStack(app, "storage")
   const customerProfileStorageStack = new CustomerProfileStorageStack(app, "customerProfile")
