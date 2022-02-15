@@ -1,1 +1,42 @@
+version: 0.2
 
+# This buildspec is intended to be run by CodePipeline Feature Branch Builds
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      # Install yarn if it wasn't already present in the build instance
+      - apt-get install -y git
+      - yarn --version || npm -g install yarn
+
+  pre_build:
+    commands:
+      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_BASE_REF
+      - export FEATURE_STAGE_NAME
+      - FEATURE_STAGE_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
+      - echo $FEATURE_STAGE_NAME
+      #- git log | head -100
+      - git status
+      - echo "End of PreBuild"
+
+  build:
+    commands:
+      - echo "Running Build Stage"
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo "Running SST Build Stage"
+      - cd ./frontend && yarn && cd ..
+      - yarn
+      #- yarn sst test
+      - echo $FEATURE_STAGE_NAME
+      - yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+
+  post_build:
+    commands:
+      - echo "Running post build"
+      - echo $FEATURE_BRANCH_NAME
+      - yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+      - echo "Stack with name:" $FEATURE_STAGE_NAME
