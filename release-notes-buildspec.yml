@@ -6,11 +6,10 @@ phases:
     commands:
       # Install yarn if it wasn't already present in the build instance
       - yum install -y git
-      - yarn --version || npm -g install yarn
-
+      
   pre_build:
     commands:
-      - echo Branch Name is $CODEBUILD_SOURCE_VERSION
+      - echo $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo $AWS_REGION
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
@@ -20,7 +19,6 @@ phases:
     commands:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      - echo $FEATURE_STAGE_NAME
       - git branch -a
       - git log
       - pwd
