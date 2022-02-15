@@ -20,10 +20,10 @@ phases:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - git branch -a
-      - git log
       - pwd
       - ls -la
       - git switch main
+      - git log
       - git log main --merges --oneline
       - git log --merges --first-parent main --pretty=format:"%h %<(10,trunc)%aN %C(white)%<(15)%ar%Creset %C(red bold)%<(15)%D%Creset %s"
   post_build:
