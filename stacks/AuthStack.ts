@@ -1,10 +1,16 @@
 // import * as iam from "@aws-cdk/aws-iam"
 import * as sst from "@serverless-stack/resources"
 
+export interface AuthStackProps extends sst.StackProps {
+  api: sst.Api
+  customerProfile: sst.Table
+  bus: sst.EventBus
+}
+
 export default class AuthStack extends sst.Stack {
   public auth: sst.Auth
 
-  constructor(scope: sst.App, id: string, api: sst.Api, customerProfile: sst.Table, props?: sst.StackProps) {
+  constructor(scope: sst.App, id: string, props: AuthStackProps) {
     super(scope, id, props)
 
     // Create a Cognito User Pool and Identity Pool
@@ -19,11 +25,8 @@ export default class AuthStack extends sst.Stack {
             handler: "src/triggers/postAuth.main",
             timeout: 10,
             environment: {
-              CUSTOMERS_TABLE_NAME: customerProfile.tableName,
-              ACT_ENDPOINT: process.env.ACT_ENDPOINT || "",
-              ACT_AUTH_ENDPOINT: process.env.ACT_AUTH_ENDPOINT || '',
-              ACT_CLIENT_ID: process.env.ACT_CLIENT_ID || '',
-              ACT_CLIENT_SECRET: process.env.ACT_CLIENT_SECRET || '',
+              BUS_NAME: props.bus.eventBusName,
+              CUSTOMERS_TABLE_NAME: props.customerProfile.tableName,
             },
             // permissions: [bucket],
           }
@@ -31,10 +34,10 @@ export default class AuthStack extends sst.Stack {
       },
     })
 
-    this.auth.attachPermissionsForTriggers([customerProfile])
+    this.auth.attachPermissionsForTriggers([props.customerProfile, props.bus])
     this.auth.attachPermissionsForAuthUsers([
       // Allow access to the API
-      api,
+      props.api,
     //   // Policy granting access to a specific folder in the bucket
     //   new iam.PolicyStatement({
     //     actions: ["s3:*"],

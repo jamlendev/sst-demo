@@ -139,6 +139,7 @@ export class ActoraApiClient implements ActoraClient {
         const log = new Logger({ name: 'ActoraApiClient', minLevel: process.env.LOG_LEVEL as TLogLevelName || 'debug' })
         const data = ("grant_type=client_credentials")
         log.debug(`getClientCredentials: ${process.env.ACT_AUTH_ENDPOINT}|${process.env.ACT_CLIENT_ID}`)
+        if (!process.env.ACT_AUTH_ENDPOINT) return { access_token: 'dummy-token', expires_in: 99999999 }
         const result = await axios.post(process.env.ACT_AUTH_ENDPOINT || '', data, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -237,7 +238,7 @@ export class ActoraApiClient implements ActoraClient {
 
     async getCardByISRN(payload: { customerRef: string, isrn: string }): Promise<Card | undefined> {
         const cards = await this.getCards(payload.customerRef)
-        const card = cards.find(x => x.cardNumber.ISRN === payload.isrn)
+        const card = cards?.find(x => x.cardNumber.ISRN === payload.isrn)
         return Promise.resolve(card)
     }
 
