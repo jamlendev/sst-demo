@@ -26,9 +26,9 @@ phases:
     commands:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
-      #- echo "Running SST Build Stage"
-      #- cd ./frontend && yarn && cd ..
-      #- yarn
+      - echo "Running SST Build Stage"
+      - cd ./frontend && yarn && cd ..
+      - yarn
       #- yarn sst test
       - echo $FEATURE_STAGE_NAME
       #- yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
