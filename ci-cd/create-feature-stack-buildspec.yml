@@ -33,6 +33,9 @@ phases:
       #- yarn sst test
       - echo $FEATURE_STAGE_NAME
       - yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+      
+      
+      
 
   post_build:
     commands:
