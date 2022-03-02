@@ -20,7 +20,9 @@ export default class PipelineStack extends sst.Stack {
             synth: new CodeBuildStep('SynthStep', {
                     input: CodePipelineSource.codeCommit(repo, 'master'),
                     installCommands: [
-                        'npm install -g aws-cdk'
+                        'npm install -g aws-cdk',
+                        'apt-get install -y git',
+                        'yarn --version || npm -g install yarn'
                     ],
                     commands: [
                         'npm ci',
