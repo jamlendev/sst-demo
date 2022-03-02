@@ -1,3 +1,4 @@
+import * as sst from "@serverless-stack/resources"
 import * as cdk from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { Construct } from 'constructs';
