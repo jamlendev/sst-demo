@@ -3,8 +3,8 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { Construct } from 'constructs';
 import {CodeBuildStep, CodePipeline, CodePipelineSource} from "aws-cdk-lib/pipelines";
 
-export default class PipelineStack extends cdk.Stack {
-    constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export default class PipelineStack extends sst.Stack {
+    constructor(scope: sst.App, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
         // This creates a new CodeCommit repository called 'WorkshopRepo'
