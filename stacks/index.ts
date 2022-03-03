@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import * as sst from "@serverless-stack/resources";
-
+import { RemovalPolicy } from "aws-cdk-lib"
 import StorageStack from "./StorageStack"
 import ApiStack from "./ApiStack"
 import AuthStack from "./AuthStack"
@@ -15,6 +15,11 @@ export default function main(app: sst.App): void {
   app.setDefaultFunctionProps({
     runtime: "nodejs14.x"
   });
+  
+  //app.setDefaultRemovalPolicy(
+    //process.env.IS_EPHEMERAL ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN 
+  //);
+  
   const pipelineStack = new PipelineStack (app, "pipeline")
   const storageStack = new StorageStack(app, "storage")
   const customerProfileStorageStack = new CustomerProfileStorageStack(app, "customerProfile")
