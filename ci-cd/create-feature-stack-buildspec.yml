@@ -46,4 +46,6 @@ phases:
       
 cache:
   paths:
-    - '/sst-demo/'
+    - '/sst-demo/**/*'
+    - '/sst-demo/frontend/**/*'
+    - '/sst-demo/src/**/*'
