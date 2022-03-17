@@ -43,4 +43,6 @@ phases:
       - echo "Stack with name Create and Updated:" $FEATURE_STAGE_NAME
       - echo "Running PULL_REQUEST_UPDATED webhook"
       
-      
+cache:
+  paths:
+    - '/sst-demo/'
