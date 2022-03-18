@@ -8,6 +8,7 @@ phases:
       nodejs: 14
     commands:
       # Install yarn if it wasn't already present in the build instance
+      - apt-get update -y
       - apt-get install -y git
       - apt-get install -y time
       - yarn --version || npm -g install yarn
