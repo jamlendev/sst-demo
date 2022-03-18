@@ -8,9 +8,7 @@ phases:
       nodejs: 14
     commands:
       # Install yarn if it wasn't already present in the build instance
-      - apt-get update -y
       - apt-get install -y git
-      - apt-get install -y time
       - yarn --version || npm -g install yarn
       
 
@@ -31,8 +29,8 @@ phases:
       - echo "Running Build Stage"
       - echo $CODEBUILD_WEBHOOK_HEAD_REF
       - echo "Running SST Build Stage"
-      - time cd ./frontend && yarn && cd ..
-      - time yarn
+      - cd ./frontend && yarn && cd ..
+      - yarn
       #- yarn sst test
       - echo $FEATURE_STAGE_NAME
       #- yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
@@ -41,13 +39,13 @@ phases:
     commands:
       - echo "Running post build"
       - echo $FEATURE_BRANCH_NAME
-      - time yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+      - yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
       - echo "Stack with name Create and Updated:" $FEATURE_STAGE_NAME
       - echo "Running PULL_REQUEST_UPDATED webhook"
       - ls -la
       
 cache:
   paths:
-    - '/sst-demo/**/*'
+    - 'node_modules/**/*'
     - 'frontend/**/*'
     - 'src/**/*'
