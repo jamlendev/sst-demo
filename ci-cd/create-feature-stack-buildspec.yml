@@ -46,6 +46,5 @@ phases:
       
 cache:
   paths:
+    - 'frontend/node_modules/**/*'
     - 'node_modules/**/*'
-    - 'frontend/**/*'
-    - 'src/**/*'
