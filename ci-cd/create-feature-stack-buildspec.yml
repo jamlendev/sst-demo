@@ -2,7 +2,6 @@ version: 0.2
 # test build caching
 # This buildspec is intended to be run by CodePipeline Feature Branch Builds
 
-
 phases:
   install:
     runtime-versions:
