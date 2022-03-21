@@ -19,8 +19,6 @@ phases:
       - export FEATURE_STAGE_NAME
       - FEATURE_STAGE_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
       - echo $FEATURE_STAGE_NAME
-      - echo "CHECKING LAST FOLDER CHANGE"
-      - git log -1 --pretty="format:%ci" frontend/*
       #- git log | head -100
       - git status
       - echo "End of PreBuild"
