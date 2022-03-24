@@ -1,5 +1,5 @@
 version: 0.2
-
+# test build caching
 # This buildspec is intended to be run by CodePipeline Feature Branch Builds
 
 phases:
@@ -10,7 +10,7 @@ phases:
       # Install yarn if it wasn't already present in the build instance
       - apt-get install -y git
       - yarn --version || npm -g install yarn
-
+      
   pre_build:
     commands:
       - echo Branch Name is $CODEBUILD_SOURCE_VERSION
@@ -19,6 +19,7 @@ phases:
       - export FEATURE_STAGE_NAME
       - FEATURE_STAGE_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed -n 's/.*\(BRD-[0-9]*\).*/\1/p')
       - echo $FEATURE_STAGE_NAME
+      - echo "TESTING CACHING"
       #- git log | head -100
       - git status
       - echo "End of PreBuild"
@@ -32,11 +33,8 @@ phases:
       - yarn
       #- yarn sst test
       - echo $FEATURE_STAGE_NAME
-      - yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
+      #- yarn sst build --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
       
-      
-      
-
   post_build:
     commands:
       - echo "Running post build"
@@ -44,5 +42,9 @@ phases:
       - yarn sst deploy --stage $FEATURE_STAGE_NAME --region eu-west-2 --verbose
       - echo "Stack with name Create and Updated:" $FEATURE_STAGE_NAME
       - echo "Running PULL_REQUEST_UPDATED webhook"
+      - ls -la
       
-      
+cache:
+  paths:
+    - 'frontend/node_modules/**/*'
+    - 'node_modules/**/*'
