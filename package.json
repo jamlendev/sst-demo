@@ -22,7 +22,7 @@
     "axios": "^0.24.0",
     "axios-oauth-client": "https://github.com/E-gy/axios-oauth-client#d.ts",
     "axios-token-interceptor": "^0.2.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "reflect-metadata": "^0.1.13",
     "status-code-enum": "^1.0.0",
     "tslog": "^3.3.0",
